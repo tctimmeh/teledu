@@ -1,0 +1,18 @@
+{% load character %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ character.name }}</title>
+</head>
+<body>
+    <p>
+      Name: {{ character.name }}
+    </p>
+    {% for attribute in character.attributes.all %}
+      <p>
+          <b>{{ attribute.name }}</b>: {{ character|charAttr:attribute }}
+      </p>
+    {% endfor %}
+</body>
+</html>

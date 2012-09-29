@@ -11,3 +11,8 @@ class Character(models.Model):
   def __unicode__(self):
     return self.name
 
+  def getAttribute(self, id):
+    return CharacterAttribute.objects.get(character = self, attribute = id).value
+
+from .characterAttribute import CharacterAttribute
+
