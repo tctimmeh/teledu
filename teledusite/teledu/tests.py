@@ -23,3 +23,13 @@ class WhenGettingCharacterAttributeValue(TestCase):
     actual = self.char.getAttribute(self.attrDefn)
     self.assertEqual(actual, self.charAttr.value)
 
+class WhenGettingCharacterGameSystem(TestCase):
+  def setUp(self):
+    self.gameSystem = GameSystem.objects.create(name = 'something')
+    self.attrDefn = CharacterAttributeDefinition.objects.create(gameSystem = self.gameSystem, name = 'whatever')
+    self.char = Character.objects.create(name = 'whomever')
+    self.charAttr = CharacterAttribute.objects.create(character = self.char, attribute = self.attrDefn, value = 'a super value')
+
+  def testThatCorrectGameSystemIsReturned(self):
+    actual = self.char.gameSystem
+    self.assertEqual(actual, self.gameSystem)

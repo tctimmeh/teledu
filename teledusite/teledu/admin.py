@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib import admin
 from django.forms.widgets import TextInput
-from .models import GameSystem, CharacterAttributeDefinition, Character, CharacterAttribute
+from .models import GameSystem, CharacterAttributeDefinition, Character, CharacterAttribute, CharacterSheet
 
 class CharacterAttributeForm(forms.ModelForm):
   class Meta:
@@ -21,3 +21,5 @@ class CharacterAdmin(admin.ModelAdmin):
 admin.site.register(GameSystem)
 admin.site.register(Character, CharacterAdmin)
 admin.site.register(CharacterAttributeDefinition)
+admin.site.register(CharacterSheet)
+

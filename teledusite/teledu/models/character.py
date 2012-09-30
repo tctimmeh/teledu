@@ -11,6 +11,10 @@ class Character(models.Model):
   def __unicode__(self):
     return self.name
 
+  @property
+  def gameSystem(self):
+    return self.attributes.all()[0].gameSystem
+
   def getAttribute(self, id):
     return CharacterAttribute.objects.get(character = self, attribute = id).value
 
