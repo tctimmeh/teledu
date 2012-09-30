@@ -2,5 +2,5 @@ venv
 *.swp
 *.py[co]
 .idea
-*.vpp
+*.vpp*
 *.db
