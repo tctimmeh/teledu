@@ -1,3 +1,4 @@
+import json
 from django.db import models
 
 from .character import Character
@@ -13,4 +14,14 @@ class CharacterAttribute(models.Model):
 
   def __unicode__(self):
     return '%s [%s] = [%s]' % (self.character.name, self.attribute.name, self.value)
+
+  def asDict(self):
+   return {
+      'id': self.attribute.id,
+      'name': self.attribute.name,
+      'value': self.value,
+    }
+
+  def serialize(self):
+    return json.dumps(self.asDict())
 

@@ -1,3 +1,4 @@
+from django.core import serializers
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext, Template
@@ -6,8 +7,11 @@ from models import Character, CharacterSheet
 def hello(request):
   return HttpResponse('Hello, Teledu!')
 
-def charSheet(request, charId):
+def charSheet(request, charId, json):
   character = get_object_or_404(Character, id = charId)
+  if json:
+    return HttpResponse(character.serialize())
+
   sheetTemplate = CharacterSheet.objects.filter(gameSystem = character.gameSystem)[0]
 
   templateHeader =  '''{% extends "characterSheet.html" %}

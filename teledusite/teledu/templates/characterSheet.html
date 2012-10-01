@@ -1,7 +1,10 @@
+{% load staticfiles %}
 <!DOCTYPE html>
 <html>
 <head>
     <title>{{ character.name }}</title>
+
+  <script type="text/javascript" src="{% static "lib/jquery-1.8.2.min.js" %}"></script>
 </head>
 <body>
 {% block characterSheet %}{% endblock %}
