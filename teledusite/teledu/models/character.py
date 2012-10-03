@@ -25,8 +25,11 @@ class Character(models.Model):
   def gameSystem(self):
     return self.attributes.all()[0].gameSystem
 
-  def getAttribute(self, id):
-    return CharacterAttribute.objects.get(character = self, attribute = id).value
+  def getAttributeByDefinition(self, attributeDefinition):
+    return CharacterAttribute.objects.get(character = self, definition = attributeDefinition)
+
+  def getAttributeValueByDefinition(self, attributeDefinition):
+    return self.getAttributeByDefinition(attributeDefinition).value
 
 from .characterAttribute import CharacterAttribute
 

@@ -10,7 +10,7 @@ class WhenEmbeddingCharacterAttribute(TeleduTestCase):
     self.context['character'] = self.character
 
   def assertCorrectAttributeElement(self, elementText):
-    self.assertEqual(elementText, '<span id="attr_%d">%s</span>' % (self.attributeDefinition.id, self.attributeValue))
+    self.assertEqual(elementText, '<span id="attr_%d" class="char_attr">%s</span>' % (self.charAttr.id, self.attributeValue))
 
   def testThatAttributeElementIsReturnedUsingAttributeReference(self):
     actual = char_attr(self.context, self.attributeDefinition)

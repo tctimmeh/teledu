@@ -1,8 +1,7 @@
-from django.core import serializers
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
 from django.template import RequestContext, Template
-from models import Character, CharacterSheet
+from models import Character, CharacterSheet, CharacterAttribute
 
 def hello(request):
   return HttpResponse('Hello, Teledu!')
@@ -30,3 +29,12 @@ def charSheet(request, charId, json):
   output = template.render(context)
 
   return HttpResponse(output)
+
+
+def setCharacterAttribute(request, charId):
+  character = get_object_or_404(Character, id = charId)
+  attribute = get_object_or_404(CharacterAttribute, id = int(request.POST['id']), character = character)
+  attribute.value = request.POST['value']
+  attribute.save()
+  return HttpResponse(attribute.value)
+

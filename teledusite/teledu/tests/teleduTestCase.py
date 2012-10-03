@@ -7,5 +7,5 @@ class TeleduTestCase(TestCase):
     self.attributeDefinition = CharacterAttributeDefinition.objects.create(gameSystem = self.gameSystem, name = 'whatever')
     self.character = Character.objects.create(name = 'whomever')
     self.attributeValue = 'a testing value'
-    self.charAttr = CharacterAttribute.objects.create(character = self.character, attribute = self.attributeDefinition, value = self.attributeValue)
+    self.charAttr = CharacterAttribute.objects.create(character = self.character, definition = self.attributeDefinition, value = self.attributeValue)
 

@@ -12,8 +12,8 @@ class CharacterAttributeInline(admin.StackedInline):
   form = CharacterAttributeForm
   extra = 0
   can_delete = False
-  fields = [('attribute', 'value')]
-  readonly_fields = ['attribute']
+  fields = [('definition', 'value')]
+  readonly_fields = ['definition']
 
 class CharacterAdmin(admin.ModelAdmin):
   inlines = [CharacterAttributeInline,]
