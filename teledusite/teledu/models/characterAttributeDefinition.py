@@ -7,6 +7,7 @@ class CharacterAttributeDefinition(models.Model):
 
   class Meta:
     app_label = 'teledu'
+    unique_together = (('gameSystem', 'name'))
 
   def __unicode__(self):
     return self.name
