@@ -26,3 +26,14 @@ class CharacterAttribute(models.Model):
   def serialize(self):
     return json.dumps(self.asDict())
 
+  def calculateNewValue(self, char, **kwargs):
+    newValue = self._execCalcFunction(char, kwargs)
+    self.value = newValue
+
+  def _execCalcFunction(self, char, scope):
+    scope['attr'] = lambda name: char.attr(name)
+    scope['result'] = None
+    exec self.definition.calcFunction in scope
+    return scope['result']
+
+
