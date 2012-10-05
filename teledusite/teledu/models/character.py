@@ -1,6 +1,7 @@
 import json
 from django.db import models
 from characterAttributeDefinition import CharacterAttributeDefinition
+from .lib import AttributeDependentGraph
 
 class Character(models.Model):
   name = models.CharField(max_length = 50)
@@ -34,13 +35,11 @@ class Character(models.Model):
     return self.getAttributeByDefinition(attributeDefinition).value
 
   def setAttributeValue(self, attrDefinition, value):
-    attrSets = self._getLayeredDependentsForAttribute(attrDefinition)
-    attrSets = self._cullDuplicatesFromDependencyLayers(attrSets)
+    attrGraph = AttributeDependentGraph(attrDefinition)
 
     self._setAttr(attrDefinition, value)
-    for depSet in attrSets:
-      for dep in depSet:
-        self._calculateAttributeValue(dep)
+    for dep in attrGraph.items():
+      self._calculateAttributeValue(dep)
 
   def _setAttr(self, attrDef, value):
     attribute = CharacterAttribute.objects.get(character = self, definition = attrDef)
@@ -51,40 +50,6 @@ class Character(models.Model):
     attribute = CharacterAttribute.objects.get(character = self, definition = attrDefn)
     attribute.calculateNewValue(char = self)
     attribute.save()
-
-  def _getLayeredDependentsForAttribute(self, defn):
-    attrSets = []
-
-    deps = set(defn.dependents.all())
-    depList = []
-    for dep in deps:
-      depList.append(dep.attribute)
-    attrSets.append(depList)
-
-    while depList:
-      depSet = set()
-      for dep in depList:
-        newDeps = set(dep.dependents.all())
-        depSet = depSet.union(newDeps)
-      depList = []
-      for dep in depSet:
-        depList.append(dep.attribute)
-      attrSets.append(depList)
-
-    return attrSets
-
-  def _cullDuplicatesFromDependencyLayers(self, attrSets):
-    finalAttrs = []
-    allDeps = set()
-    for deps in reversed(attrSets):
-      finalDeps = set()
-      for dep in deps:
-        if dep not in allDeps:
-          finalDeps.add(dep)
-          allDeps.add(dep)
-      if finalDeps:
-        finalAttrs.insert(0, finalDeps)
-    return finalAttrs
 
 from characterAttribute import CharacterAttribute
 
