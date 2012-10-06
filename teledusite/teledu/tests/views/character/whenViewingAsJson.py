@@ -1,4 +1,3 @@
-import random
 from teledu.tests.teleduTestCase import TeleduTestCase
 
 class WhenViewingCharacterSheetAsJson(TeleduTestCase):

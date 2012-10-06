@@ -9,7 +9,7 @@ class WhenViewingCharacterSheet(TeleduTestCase):
   def testThatSuccessCodeIsReturnedForValidCharacterId(self):
     self.assertEqual(self.response.status_code, 200)
 
-  def testThatNotFoundCodeIsReturnedForValidCharacterId(self):
+  def testThatNotFoundCodeIsReturnedForInvalidCharacterId(self):
     self.response = self.client.get('/character/%d' % random.randint(9999999, 9999999999))
     self.assertEqual(self.response.status_code, 404)
 

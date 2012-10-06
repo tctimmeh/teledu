@@ -30,11 +30,9 @@ def charSheet(request, charId, json):
 
   return HttpResponse(output)
 
-def setCharacterAttribute(request, charId):
+def setCharacterAttribute(request, charId, attrId):
   character = get_object_or_404(Character, id = charId)
-
-  attributeId = int(request.POST['id'])
-  attribute = get_object_or_404(CharacterAttribute, id = attributeId)
+  attribute = get_object_or_404(CharacterAttribute, id = attrId)
 
   value = request.POST['value']
   character.setAttributeValue(attribute.definition, value)
