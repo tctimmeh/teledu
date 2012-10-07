@@ -38,11 +38,17 @@ class Character(models.Model):
   def attr(self, attributeName):
     return CharacterAttribute.objects.get(character = self, definition__name = attributeName).value
 
-  def getAttributeByDefinition(self, attributeDefinition):
-    return CharacterAttribute.objects.get(character = self, definition = attributeDefinition)
-
   def getAttributeValueByDefinition(self, attributeDefinition):
-    return self.getAttributeByDefinition(attributeDefinition).value
+    if isinstance(attributeDefinition, int):
+      attributeDefinition = CharacterAttributeDefinition.objects.get(pk = attributeDefinition)
+
+    attribute = CharacterAttribute.objects.get(character = self, definition = attributeDefinition)
+    try:
+      result = attributeDefinition.dataType.translateValue(attribute.value)
+    except ValueError, e:
+      raise ValueError('Failed to convert attribute [%s] with value [%s] to type [%s]' % (
+        attributeDefinition, attribute.value, attributeDefinition.dataType.name))
+    return result
 
   def setAttributeValue(self, attrDefinition, value):
     attrGraph = AttributeDependentGraph(attrDefinition)

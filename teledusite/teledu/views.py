@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext, Template
 from django.template.loader import get_template
-from models import Character, CharacterSheet, CharacterAttribute, GameSystem
+from models import Character, CharacterSheet, CharacterAttribute, GameSystem, CharacterAttributeDefinition
 
 def welcome(request):
   return render(request, 'welcome.html', {'characters': Character.objects.all()})
@@ -43,10 +43,10 @@ def charSheet(request, charId, json):
 
 def setCharacterAttribute(request, charId, attrId):
   character = get_object_or_404(Character, id = charId)
-  attribute = get_object_or_404(CharacterAttribute, id = attrId)
+  attribute = get_object_or_404(CharacterAttributeDefinition, id = attrId)
 
   value = request.POST['value']
-  character.setAttributeValue(attribute.definition, value)
+  character.setAttributeValue(attribute, value)
 
   return HttpResponse(value)
 

@@ -10,9 +10,6 @@ def char_attr(context, attributeDefinition):
   if isinstance(attributeDefinition, str) or isinstance(attributeDefinition, unicode):
     attributeDefinition = CharacterAttributeDefinition.objects.get(gameSystem = character.gameSystem, name = attributeDefinition)
 
-  attribute = character.getAttributeByDefinition(attributeDefinition)
-  return '<span id="attr_%d" class="char_attr">%s</span>' % (
-    attribute.id,
-    attribute.value,
-  )
+  value = character.getAttributeValueByDefinition(attributeDefinition)
+  return '<span id="attr_%d" class="char_attr">%s</span>' % (attributeDefinition.id, value)
 

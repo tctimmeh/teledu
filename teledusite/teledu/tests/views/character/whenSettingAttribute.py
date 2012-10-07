@@ -12,9 +12,10 @@ class WhenSettingAttribute(TeleduTestCase):
     if characterId is None:
       characterId = self.character.id
     if attributeId is None:
-      attributeId = self.charAttr.id
+      attributeId = self.attributeDefinition.id
     if value is None:
       value = self.uniqStr()
+
     return self.client.post('/character/%d/attribute/%d' % (characterId, attributeId), {
       'value': value
     })

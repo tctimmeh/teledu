@@ -1,0 +1,23 @@
+[
+  {
+    "model": "teledu.DataType",
+    "pk": 1,
+    "fields": {
+      "name": "text"
+    }
+  },
+  {
+    "model": "teledu.DataType",
+    "pk": 2,
+    "fields": {
+      "name": "integer"
+    }
+  },
+  {
+    "model": "teledu.DataType",
+    "pk": 3,
+    "fields": {
+      "name": "real"
+    }
+  }
+]

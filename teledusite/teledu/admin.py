@@ -26,10 +26,10 @@ class CharacterAttributeDependencyInline(admin.StackedInline):
 class CharacterAttributeDefinitionAdmin(admin.ModelAdmin):
   search_fields = ['name']
   ordering = ['gameSystem__name', 'name']
-  list_display = ['gameSystem', 'name', 'default']
+  list_display = ['gameSystem', 'name', 'dataType', 'default']
   list_display_links = ['name']
   list_filter = ['gameSystem']
-  list_editable = ['default']
+  list_editable = ['dataType', 'default']
   inlines = [CharacterAttributeDependencyInline,]
 
 admin.site.register(GameSystem)
