@@ -17,3 +17,7 @@ class WhenCreatingCharacter(TeleduTestCase):
     actual = CharacterAttribute.objects.filter(character = self.character, definition = self.attributeDefinition)
     self.assertGreater(len(actual), 0)
 
+  def testThatAttributesGetDefaultValues(self):
+    actual = CharacterAttribute.objects.get(character = self.character, definition = self.attributeDefinition)
+    self.assertEqual(actual.value, self.attributeDefinition.default)
+

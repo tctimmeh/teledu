@@ -24,7 +24,7 @@ class Character(models.Model):
   def create(cls, gameSystem, name):
     newCharacter = Character.objects.create(name = name)
     for attribute in CharacterAttributeDefinition.objects.filter(gameSystem = gameSystem):
-      CharacterAttribute.objects.create(character = newCharacter, definition = attribute)
+      CharacterAttribute.objects.create(character = newCharacter, definition = attribute, value = attribute.default)
     return newCharacter
 
   def serialize(self):

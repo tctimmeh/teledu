@@ -7,7 +7,7 @@ from .characterAttributeDefinition import CharacterAttributeDefinition
 class CharacterAttribute(models.Model):
   character = models.ForeignKey(Character)
   definition = models.ForeignKey(CharacterAttributeDefinition)
-  value = models.TextField(null = True, blank = True, default = None)
+  value = models.TextField(blank = True, default = '')
 
   class Meta:
     app_label = 'teledu'

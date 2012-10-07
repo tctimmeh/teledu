@@ -28,7 +28,8 @@ class TeleduTestCase(TestCase):
       gameSystem = self.gameSystem
     if name is None:
       name = self.uniqStr()
-    return CharacterAttributeDefinition.objects.create(gameSystem = gameSystem, name = name, calcFunction = calcFunction)
+    return CharacterAttributeDefinition.objects.create(gameSystem = gameSystem, name = name, calcFunction = calcFunction,
+      default = self.uniqStr())
 
   def createCharacter(self):
     return Character.objects.create(name = self.uniqStr())
