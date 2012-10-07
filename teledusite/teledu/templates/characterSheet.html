@@ -1,17 +1,17 @@
+{% extends "base.html" %}
 {% load staticfiles %}
-<!DOCTYPE html>
-<html>
-<head>
-  <title>{{ character.name }}</title>
 
+{% block title %}{{ character.name }}{% endblock %}
+
+{% block head %}
   <link type="text/css" rel="stylesheet" href="{% static "css/charSheet.css" %}" />
 
   <script type="text/javascript" src="{% static "js/lib/jquery.js" %}"></script>
   <script type="text/javascript" src="{% static "js/lib/jquery.cookie.js" %}"></script>
   <script type="text/javascript" src="{% static "js/lib/jquery.jeditable.mini.js" %}"></script>
   <script type="text/javascript" src="{% static "js/src/charSheet.js" %}"></script>
-</head>
-<body>
-{% block characterSheet %}{% endblock %}
-</body>
-</html>
+{% endblock %}
+
+{% block body %}
+  {% block characterSheet %}{% endblock %}
+{% endblock %}

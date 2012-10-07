@@ -24,6 +24,9 @@ class CharacterAttributeDependencyInline(admin.StackedInline):
   extra = 0
 
 class CharacterAttributeDefinitionAdmin(admin.ModelAdmin):
+  search_fields = ['name']
+  list_display = [ 'name', 'gameSystem']
+  list_filter = ['gameSystem']
   inlines = [CharacterAttributeDependencyInline,]
 
 admin.site.register(GameSystem)

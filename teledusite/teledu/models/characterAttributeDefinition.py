@@ -11,5 +11,5 @@ class CharacterAttributeDefinition(models.Model):
     unique_together = (('gameSystem', 'name'))
 
   def __unicode__(self):
-    return self.name
+    return '%s - %s' % (self.gameSystem.name, self.name)
 

@@ -1,10 +1,12 @@
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.core.urlresolvers import reverse
+from django.forms import ModelForm, ModelChoiceField
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext, Template
-from models import Character, CharacterSheet, CharacterAttribute
+from models import Character, CharacterSheet, CharacterAttribute, GameSystem, CharacterAttributeDefinition
 
 def hello(request):
-  return HttpResponse('Hello, Teledu!')
+  return render(request, 'welcome.html')
 
 def charSheet(request, charId, json):
   character = get_object_or_404(Character, id = charId)
@@ -39,3 +41,22 @@ def setCharacterAttribute(request, charId, attrId):
 
   return HttpResponse(value)
 
+class CharacterForm(ModelForm):
+  gameSystem = ModelChoiceField(queryset = GameSystem.objects.all(), label = 'Game System')
+  class Meta:
+    model = Character
+    exclude = ('attributes')
+
+def createCharacter(request):
+  if request.method == 'POST':
+    form = CharacterForm(request.POST)
+    if form.is_valid():
+      data = form.cleaned_data
+      character = Character.objects.create(name = data['name'])
+      for attribute in CharacterAttributeDefinition.objects.filter(gameSystem = data['gameSystem']):
+        CharacterAttribute.objects.create(character = character, definition = attribute)
+      return HttpResponseRedirect(reverse(charSheet, kwargs = {'charId': character.id}))
+  else:
+    form = CharacterForm()
+
+  return render(request, 'createCharacter.html', {'form': form})
