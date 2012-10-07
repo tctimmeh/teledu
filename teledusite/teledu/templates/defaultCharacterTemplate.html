@@ -1,0 +1,25 @@
+{% extends "characterSheet.html" %}
+{% load character %}
+
+{% block characterSheet %}
+  <p>
+    <b>Name</b>: {{ character.name }}
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>Attribute</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for attribute in character.attributes.all %}
+        <tr>
+          <td>{{ attribute.name }}</td>
+          <td>{% char_attr attribute %}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+

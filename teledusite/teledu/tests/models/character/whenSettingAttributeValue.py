@@ -1,15 +1,8 @@
 import random
 from teledu.tests.teleduTestCase import TeleduTestCase
-from teledu.models import CharacterAttribute, CharacterAttributeDependency
+from teledu.models import CharacterAttribute
 
 class WhenSettingCharacterAttributeValue(TeleduTestCase):
-  def addAttrDefinition(self, dependencies = [], calcFunction = None):
-    attr = self.createAttrDefinition(calcFunction = calcFunction)
-    self.createAttrForCharacter(attrDefinition = attr)
-    for dependency in dependencies:
-      CharacterAttributeDependency.objects.create(attribute = attr, dependency = dependency)
-    return attr
-
   def getAttrValue(self, attrDefn):
     return int(CharacterAttribute.objects.get(character = self.character, definition = attrDefn).value)
     

@@ -1,12 +1,24 @@
 from django.core.urlresolvers import reverse
-from django.forms import ModelForm, ModelChoiceField, Form, BooleanField
+from django.forms import ModelForm, ModelChoiceField
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext, Template
+from django.template.loader import get_template
 from models import Character, CharacterSheet, CharacterAttribute, GameSystem
 
 def welcome(request):
   return render(request, 'welcome.html', {'characters': Character.objects.all()})
+
+def compileCustomSheetForCharacter(templateCode):
+  templateHeader =  '''{% extends "characterSheet.html" %}
+{% load character %}
+{% block characterSheet %}
+'''
+  templateFooter = '''
+{% endblock %}
+'''
+  templateString = '%s%s%s' % (templateHeader, templateCode, templateFooter)
+  return Template(templateString)
 
 def charSheet(request, charId, json):
   character = get_object_or_404(Character, id = charId)
@@ -19,33 +31,15 @@ def charSheet(request, charId, json):
 
   sheetTemplates = CharacterSheet.objects.filter(gameSystem = character.gameSystem)
   if sheetTemplates:
-    sheetTemplate = sheetTemplates[0].template
+    template = compileCustomSheetForCharacter(sheetTemplates[0].template)
   else:
-    sheetTemplate = r'''<p>
-  <b>Name</b>: {{ character.name }}
-</p>
-{% for attribute in character.attributes.all %}
-  <p>
-    <b>{{ attribute.name }}</b>: {% char_attr attribute %}
-  </p>
-{% endfor %}'''
+    template = get_template("defaultCharacterTemplate.html")
 
-  templateHeader =  '''{% extends "characterSheet.html" %}
-{% load character %}
-{% block characterSheet %}
-'''
-  templateFooter = '''
-{% endblock %}
-'''
-  templateString = '%s%s%s' % (templateHeader, sheetTemplate, templateFooter)
   context = RequestContext(request)
   context.update({
     'character': character,
   })
-  template = Template(templateString)
-  output = template.render(context)
-
-  return HttpResponse(output)
+  return HttpResponse(template.render(context))
 
 def setCharacterAttribute(request, charId, attrId):
   character = get_object_or_404(Character, id = charId)

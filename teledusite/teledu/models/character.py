@@ -17,6 +17,9 @@ class Character(models.Model):
   def gameSystem(self):
     return self.attributes.all()[0].gameSystem
 
+  def attributesByName(self):
+    return self.attributes.all().order_by('name')
+
   @classmethod
   def create(cls, gameSystem, name):
     newCharacter = Character.objects.create(name = name)

@@ -1,6 +1,6 @@
 import random, string
 from django.test import TestCase
-from teledu.models import GameSystem, CharacterAttributeDefinition, Character, CharacterAttribute, CharacterSheet
+from teledu.models import GameSystem, CharacterAttributeDefinition, Character, CharacterAttribute, CharacterSheet, CharacterAttributeDependency
 
 random.seed(0x5ADB0075)
 
@@ -23,10 +23,12 @@ class TeleduTestCase(TestCase):
   def createGameSystem(self):
     return GameSystem.objects.create(name = self.uniqStr())
 
-  def createAttrDefinition(self, gameSystem = None, calcFunction = None):
+  def createAttrDefinition(self, gameSystem = None, calcFunction = None, name = None):
     if gameSystem is None:
       gameSystem = self.gameSystem
-    return CharacterAttributeDefinition.objects.create(gameSystem = gameSystem, name = self.uniqStr(), calcFunction = calcFunction)
+    if name is None:
+      name = self.uniqStr()
+    return CharacterAttributeDefinition.objects.create(gameSystem = gameSystem, name = name, calcFunction = calcFunction)
 
   def createCharacter(self):
     return Character.objects.create(name = self.uniqStr())
@@ -42,4 +44,12 @@ class TeleduTestCase(TestCase):
     if gameSystem is None:
       gameSystem = self.gameSystem
     return CharacterSheet.objects.create(gameSystem = gameSystem, name = self.uniqStr(), template = self.uniqStr())
-    
+
+  def addAttrDefinition(self, dependencies = [], calcFunction = None, name = None):
+    attr = self.createAttrDefinition(calcFunction = calcFunction, name = name)
+    self.createAttrForCharacter(attrDefinition = attr)
+    for dependency in dependencies:
+      CharacterAttributeDependency.objects.create(attribute = attr, dependency = dependency)
+    return attr
+
+
