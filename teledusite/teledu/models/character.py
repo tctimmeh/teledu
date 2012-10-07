@@ -13,6 +13,17 @@ class Character(models.Model):
   def __unicode__(self):
     return self.name
 
+  @property
+  def gameSystem(self):
+    return self.attributes.all()[0].gameSystem
+
+  @classmethod
+  def create(cls, gameSystem, name):
+    newCharacter = Character.objects.create(name = name)
+    for attribute in CharacterAttributeDefinition.objects.filter(gameSystem = gameSystem):
+      CharacterAttribute.objects.create(character = newCharacter, definition = attribute)
+    return newCharacter
+
   def serialize(self):
     attributes = CharacterAttribute.objects.filter(character = self)
     return json.dumps({
@@ -20,10 +31,6 @@ class Character(models.Model):
       'name': self.name,
       'attributes': [attribute.asDict() for attribute in attributes],
     })
-
-  @property
-  def gameSystem(self):
-    return self.attributes.all()[0].gameSystem
 
   def attr(self, attributeName):
     return CharacterAttribute.objects.get(character = self, definition__name = attributeName).value

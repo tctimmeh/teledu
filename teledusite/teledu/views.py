@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext, Template
 from models import Character, CharacterSheet, CharacterAttribute, GameSystem, CharacterAttributeDefinition
 
-def hello(request):
+def welcome(request):
   return render(request, 'welcome.html')
 
 def charSheet(request, charId, json):
@@ -52,11 +52,10 @@ def createCharacter(request):
     form = CharacterForm(request.POST)
     if form.is_valid():
       data = form.cleaned_data
-      character = Character.objects.create(name = data['name'])
-      for attribute in CharacterAttributeDefinition.objects.filter(gameSystem = data['gameSystem']):
-        CharacterAttribute.objects.create(character = character, definition = attribute)
+      character = Character.create(data['gameSystem'], data['name'])
       return HttpResponseRedirect(reverse(charSheet, kwargs = {'charId': character.id}))
   else:
     form = CharacterForm()
 
   return render(request, 'createCharacter.html', {'form': form})
+
