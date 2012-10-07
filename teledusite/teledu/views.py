@@ -1,19 +1,34 @@
 from django.core.urlresolvers import reverse
-from django.forms import ModelForm, ModelChoiceField
+from django.forms import ModelForm, ModelChoiceField, Form, BooleanField
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext, Template
-from models import Character, CharacterSheet, CharacterAttribute, GameSystem, CharacterAttributeDefinition
+from models import Character, CharacterSheet, CharacterAttribute, GameSystem
 
 def welcome(request):
-  return render(request, 'welcome.html')
+  return render(request, 'welcome.html', {'characters': Character.objects.all()})
 
 def charSheet(request, charId, json):
   character = get_object_or_404(Character, id = charId)
+  if request.method == 'DELETE':
+    character.delete()
+    return HttpResponse()
+
   if json:
     return HttpResponse(character.serialize())
 
-  sheetTemplate = CharacterSheet.objects.filter(gameSystem = character.gameSystem)[0]
+  sheetTemplates = CharacterSheet.objects.filter(gameSystem = character.gameSystem)
+  if sheetTemplates:
+    sheetTemplate = sheetTemplates[0].template
+  else:
+    sheetTemplate = r'''<p>
+  <b>Name</b>: {{ character.name }}
+</p>
+{% for attribute in character.attributes.all %}
+  <p>
+    <b>{{ attribute.name }}</b>: {% char_attr attribute %}
+  </p>
+{% endfor %}'''
 
   templateHeader =  '''{% extends "characterSheet.html" %}
 {% load character %}
@@ -22,7 +37,7 @@ def charSheet(request, charId, json):
   templateFooter = '''
 {% endblock %}
 '''
-  templateString = '%s%s%s' % (templateHeader, sheetTemplate.template, templateFooter)
+  templateString = '%s%s%s' % (templateHeader, sheetTemplate, templateFooter)
   context = RequestContext(request)
   context.update({
     'character': character,
@@ -58,4 +73,11 @@ def createCharacter(request):
     form = CharacterForm()
 
   return render(request, 'createCharacter.html', {'form': form})
+
+def deleteCharacter(request, charId):
+  character = get_object_or_404(Character, id = charId)
+  if request.POST.get('confirm', False):
+    character.delete()
+    return HttpResponseRedirect(reverse(welcome))
+  return render(request, 'deleteCharacter.html', {'character': character})
 

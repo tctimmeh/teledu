@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}{{ character.name }} - DELETE - Teledu{% endblock %}
+
+{% block body %}
+  <p>Are you sure you want to delete character <em>"{{ character.name }}"</em>?</p>
+  <p><strong>WARNING: This is permanent. There is no way to undo this operation.</strong></p>
+  <form method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="confirm" value="true" />
+    <input type="submit" value="Yes" />
+    <input type="button" value="No" />
+  </form>
+{% endblock %}

@@ -3,5 +3,17 @@
 {% block title %}Welcome! - Teledu{% endblock %}
 
 {% block body %}
-  <a href="{% url teledu.views.createCharacter %}">Create a Character!</a>
+  <p>
+    <a href="{% url teledu.views.createCharacter %}">Create a Character!</a>
+  </p>
+  <p>
+    <h3>Characters</h3>
+    <ul>
+      {% for character in characters %}
+        <li>
+          <a href="{% url teledu.views.charSheet charId=character.id %}">{{ character.name }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </p>
 {% endblock %}

@@ -19,6 +19,10 @@ class WhenViewingCharacterSheet(TeleduTestCase):
   def testThatCustomTemplateIsRenderedInOutput(self):
     self.assertContains(self.response, self.charSheetTemplate.template)
 
+  def testThatDefaultTemplateIsRenderedWhenNoCustomTemplateIsAvailable(self):
+    self.charSheetTemplate.delete()
+    self.response = self.client.get('/character/%d' % self.character.id)
+
   def testThatRenderedContextContainsCharacter(self):
     self.assertEqual(self.response.context['character'], self.character)
 
