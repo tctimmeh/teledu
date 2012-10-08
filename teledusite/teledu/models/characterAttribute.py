@@ -36,8 +36,11 @@ class CharacterAttribute(models.Model):
     return json.dumps(self.asDict())
 
   def calculateNewValue(self, char, **kwargs):
-    newValue = self._execCalcFunction(char, kwargs)
-    self.raw_value = newValue
+    if self.definition.calcFunction:
+      newValue = self._execCalcFunction(char, kwargs)
+      self.raw_value = newValue
+
+    return self.raw_value
 
   def _execCalcFunction(self, char, scope):
     scope['attr'] = lambda name: char.getAttributeValueByName(name)

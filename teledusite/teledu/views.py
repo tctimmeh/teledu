@@ -1,3 +1,4 @@
+import json
 from django.core.urlresolvers import reverse
 from django.forms import ModelForm, ModelChoiceField
 from django.http import HttpResponse, HttpResponseRedirect
@@ -46,9 +47,9 @@ def setCharacterAttribute(request, charId, attrId):
   attribute = get_object_or_404(CharacterAttributeDefinition, id = attrId)
 
   value = request.POST['value']
-  character.setAttributeValue(attribute, value)
+  changedAttributes = character.setAttributeValue(attribute, value)
 
-  return HttpResponse(value)
+  return HttpResponse(json.dumps(changedAttributes))
 
 class CharacterForm(ModelForm):
   gameSystem = ModelChoiceField(queryset = GameSystem.objects.all(), label = 'Game System')

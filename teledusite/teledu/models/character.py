@@ -49,8 +49,13 @@ class Character(models.Model):
     attrGraph = AttributeDependentGraph(attrDefinition)
 
     self._setAttr(attrDefinition, value)
+    changedAttributes = {attrDefinition.id: value}
+
     for dep in attrGraph.items():
-      self._calculateAttributeValue(dep)
+      newValue = self._calculateAttributeValue(dep)
+      changedAttributes[dep.id] = newValue
+
+    return changedAttributes
 
   def _setAttr(self, attrDef, value):
     attribute = CharacterAttribute.objects.get(character = self, definition = attrDef)
@@ -61,6 +66,7 @@ class Character(models.Model):
     attribute = CharacterAttribute.objects.get(character = self, definition = attrDefn)
     attribute.calculateNewValue(char = self)
     attribute.save()
+    return attribute.raw_value
 
 from characterAttribute import CharacterAttribute
 

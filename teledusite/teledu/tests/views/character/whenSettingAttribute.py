@@ -1,3 +1,4 @@
+import json
 import random
 from teledu.models import CharacterAttribute
 from teledu.tests.teleduTestCase import TeleduTestCase
@@ -35,6 +36,15 @@ class WhenSettingAttribute(TeleduTestCase):
     actual = CharacterAttribute.objects.get(pk = self.charAttr.id).raw_value
     self.assertEqual(actual, self.newValue)
 
-  def testThatResponseContainsNewValue(self):
-    self.assertEqual(self.response.content, self.newValue)
+  def testThatResponseContainsJsonObjectOfEveryChangedAttribute(self):
+    dependentAttribute = self.addAttrDefinition(dependencies=[self.attributeDefinition], default = self.uniqStr())
+
+    value = self.uniqStr()
+    response = self._doRequest(value = value)
+    expected = json.dumps({
+      self.attributeDefinition.id: value,
+      dependentAttribute.id: CharacterAttribute.objects.get(character = self.character, definition = dependentAttribute).value
+    })
+    actual = response.content
+    self.assertEqual(actual, expected)
 
