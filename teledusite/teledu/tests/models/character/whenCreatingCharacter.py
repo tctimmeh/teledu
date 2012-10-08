@@ -19,5 +19,5 @@ class WhenCreatingCharacter(TeleduTestCase):
 
   def testThatAttributesGetDefaultValues(self):
     actual = CharacterAttribute.objects.get(character = self.character, definition = self.attributeDefinition)
-    self.assertEqual(actual.value, self.attributeDefinition.default)
+    self.assertEqual(actual.raw_value, self.attributeDefinition.default)
 

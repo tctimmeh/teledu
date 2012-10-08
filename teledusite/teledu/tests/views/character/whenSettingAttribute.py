@@ -32,7 +32,7 @@ class WhenSettingAttribute(TeleduTestCase):
     self.assertEqual(self.response.status_code, 404)
 
   def testThatAttributeGetsNewValue(self):
-    actual = CharacterAttribute.objects.get(pk = self.charAttr.id).value
+    actual = CharacterAttribute.objects.get(pk = self.charAttr.id).raw_value
     self.assertEqual(actual, self.newValue)
 
   def testThatResponseContainsNewValue(self):

@@ -46,7 +46,7 @@ class TeleduTestCase(TestCase):
       character = self.character
     if initialValue is None:
       initialValue = attrDefinition.default
-    return CharacterAttribute.objects.create(character = character, definition = attrDefinition, value = initialValue)
+    return CharacterAttribute.objects.create(character = character, definition = attrDefinition, raw_value = initialValue)
 
   def createCharacterSheetTemplate(self, gameSystem = None):
     if gameSystem is None:

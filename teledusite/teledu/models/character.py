@@ -24,7 +24,7 @@ class Character(models.Model):
   def create(cls, gameSystem, name):
     newCharacter = Character.objects.create(name = name)
     for attribute in CharacterAttributeDefinition.objects.filter(gameSystem = gameSystem):
-      CharacterAttribute.objects.create(character = newCharacter, definition = attribute, value = attribute.default)
+      CharacterAttribute.objects.create(character = newCharacter, definition = attribute, raw_value = attribute.default)
     return newCharacter
 
   def serialize(self):
@@ -35,7 +35,7 @@ class Character(models.Model):
       'attributes': [attribute.asDict() for attribute in attributes],
     })
 
-  def attr(self, attributeName):
+  def getAttributeValueByName(self, attributeName):
     return CharacterAttribute.objects.get(character = self, definition__name = attributeName).value
 
   def getAttributeValueByDefinition(self, attributeDefinition):
@@ -43,12 +43,7 @@ class Character(models.Model):
       attributeDefinition = CharacterAttributeDefinition.objects.get(pk = attributeDefinition)
 
     attribute = CharacterAttribute.objects.get(character = self, definition = attributeDefinition)
-    try:
-      result = attributeDefinition.dataType.translateValue(attribute.value)
-    except ValueError, e:
-      raise ValueError('Failed to convert attribute [%s] with value [%s] to type [%s]' % (
-        attributeDefinition, attribute.value, attributeDefinition.dataType.name))
-    return result
+    return attribute.value
 
   def setAttributeValue(self, attrDefinition, value):
     attrGraph = AttributeDependentGraph(attrDefinition)
@@ -59,7 +54,7 @@ class Character(models.Model):
 
   def _setAttr(self, attrDef, value):
     attribute = CharacterAttribute.objects.get(character = self, definition = attrDef)
-    attribute.value = value
+    attribute.raw_value = value
     attribute.save()
 
   def _calculateAttributeValue(self, attrDefn):

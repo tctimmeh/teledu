@@ -4,7 +4,7 @@ from teledu.models import CharacterAttribute
 
 class WhenSettingCharacterAttributeValue(TeleduTestCase):
   def getAttrValue(self, attrDefn):
-    return int(CharacterAttribute.objects.get(character = self.character, definition = attrDefn).value)
+    return int(CharacterAttribute.objects.get(character = self.character, definition = attrDefn).raw_value)
     
   def testThatAttributeHasNewValue(self):
     attrA = self.addAttrDefinition()
@@ -24,7 +24,7 @@ class WhenSettingCharacterAttributeValue(TeleduTestCase):
     self.character.setAttributeValue(attrA, expected)
     expected += 1
 
-    actual = int(CharacterAttribute.objects.get(character = self.character, definition = attrB).value)
+    actual = int(CharacterAttribute.objects.get(character = self.character, definition = attrB).raw_value)
     self.assertEqual(actual, expected)
 
   def testThatIndirectDependentsCalculateNewValues(self):
@@ -37,7 +37,7 @@ class WhenSettingCharacterAttributeValue(TeleduTestCase):
     self.character.setAttributeValue(attrA, expected)
     expected += 2
 
-    actual = int(CharacterAttribute.objects.get(character = self.character, definition = attrC).value)
+    actual = int(CharacterAttribute.objects.get(character = self.character, definition = attrC).raw_value)
     self.assertEqual(actual, expected)
 
   def testThatDiamondDependentsCalculateNewValues(self):
@@ -55,7 +55,7 @@ class WhenSettingCharacterAttributeValue(TeleduTestCase):
     self.character.setAttributeValue(attrA, setValue)
     expected = (setValue + 1) * (setValue + 2)
 
-    actual = int(CharacterAttribute.objects.get(character = self.character, definition = attrD).value)
+    actual = int(CharacterAttribute.objects.get(character = self.character, definition = attrD).raw_value)
     self.assertEqual(actual, expected)
 
   def testThatGrandchildDependentsCalculateNewValues(self):
@@ -70,6 +70,6 @@ class WhenSettingCharacterAttributeValue(TeleduTestCase):
     self.character.setAttributeValue(attrA, setValue)
     expected = (setValue) * (setValue + 1)
 
-    actual = int(CharacterAttribute.objects.get(character = self.character, definition = attrC).value)
+    actual = int(CharacterAttribute.objects.get(character = self.character, definition = attrC).raw_value)
     self.assertEqual(actual, expected)
 

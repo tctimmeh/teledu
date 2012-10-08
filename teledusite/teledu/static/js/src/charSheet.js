@@ -7,7 +7,7 @@ $(document).ready(function() {
       cssclass: "inline-edit",
       submitdata: function(value, settings) {
         var id = rxID.exec(this.id)[1];
-        settings.target += '/' + id
+        settings.target = window.location + '/attribute/' + id
       }
     }
   );
