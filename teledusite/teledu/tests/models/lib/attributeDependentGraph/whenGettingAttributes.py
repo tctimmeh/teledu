@@ -1,14 +1,15 @@
-from teledu.models import CharacterAttributeDependency
 from teledu.models.lib import AttributeDependentGraph
 from teledu.tests.teleduTestCase import TeleduTestCase
 
 class WhenGettingAttributes(TeleduTestCase):
-  def addAttrDefinition(self, dependencies = [], calcFunction = None):
-    attr = self.createAttrDefinition(calcFunction = calcFunction)
-    self.createAttrForCharacter(attrDefinition = attr)
-    for dependency in dependencies:
-      CharacterAttributeDependency.objects.create(attribute = attr, dependency = dependency)
-    return attr
+  def assertGraphEqual(self, actualList, expectedLayers):
+    for expectedLayer in expectedLayers:
+      actualLayer = []
+      for attribute in expectedLayer:
+        actualLayer.append(actualList.pop(0))
+      expectedLayer.sort(cmp = lambda x, y: cmp(unicode(x), unicode(y)))
+      actualLayer.sort(cmp = lambda x, y: cmp(unicode(x), unicode(y)))
+      self.assertEqual(actualLayer, expectedLayer)
 
   def testThatDependentsAreListedAfterDependencies(self):
     attrA = self.addAttrDefinition()
@@ -30,4 +31,19 @@ class WhenGettingAttributes(TeleduTestCase):
     graph = AttributeDependentGraph(attrA)
     actual = list(graph.items())
     self.assertEqual(actual, expected)
+
+  def testThatDependentsOfAllAttributesAreListed(self):
+    pathAFirst = self.addAttrDefinition()
+    pathASecond = self.addAttrDefinition([pathAFirst])
+    pathAThird = self.addAttrDefinition([pathASecond])
+    pathBFirst = self.addAttrDefinition()
+    pathBSecond = self.addAttrDefinition([pathBFirst])
+    pathBThird = self.addAttrDefinition([pathBSecond])
+    bottomAttr = self.addAttrDefinition([pathASecond, pathBThird])
+    expected = [[pathASecond, pathBSecond], [pathAThird, pathBThird], [bottomAttr]]
+
+    graph = AttributeDependentGraph([pathAFirst, pathBFirst])
+    actual = list(graph.items())
+
+    self.assertGraphEqual(actual, expected)
 

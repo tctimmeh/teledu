@@ -57,6 +57,11 @@ class Character(models.Model):
 
     return changedAttributes
 
+  def recalculateAllAttributes(self):
+    attrGraph = AttributeDependentGraph(self.attributes.all())
+    for dep in attrGraph.items():
+      self._calculateAttributeValue(dep)
+
   def _setAttr(self, attrDef, value):
     attribute = CharacterAttribute.objects.get(character = self, definition = attrDef)
     attribute.raw_value = value

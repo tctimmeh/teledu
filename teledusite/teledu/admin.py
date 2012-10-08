@@ -17,6 +17,13 @@ class CharacterAttributeInline(admin.StackedInline):
 
 class CharacterAdmin(admin.ModelAdmin):
   inlines = [CharacterAttributeInline,]
+  actions = ['recalculateCharacters']
+
+  def recalculateCharacters(admin, request, querySet):
+    for character in querySet:
+      character.recalculateAllAttributes()
+    admin.message_user(request, "%s successfully recalculated" % len(querySet))
+  recalculateCharacters.short_description = 'Recalculate attributes for selected characters'
 
 class CharacterAttributeDependencyInline(admin.StackedInline):
   model = CharacterAttributeDependency

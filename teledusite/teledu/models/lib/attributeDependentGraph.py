@@ -1,9 +1,19 @@
+from django.db.models import Model
+
+def combineAttributeGraphs(*attributeSets):
+  out = set()
+  for attributeSet in attributeSets:
+    if attributeSet is None:
+      continue
+    out.update(attributeSet)
+  return out
+
 class AttributeDependentGraph(object):
   def __init__(self, attributeDefinition):
-    self._definition = attributeDefinition
-    self._dependentLayers = []
+    if isinstance(attributeDefinition, Model):
+      attributeDefinition = [attributeDefinition]
 
-    self._getLayeredDependentsForAttribute()
+    self._dependentLayers = self._buildDependentsLayers(attributeDefinition)
     self._cullDuplicatesFromLayers()
 
   def items(self):
@@ -11,22 +21,34 @@ class AttributeDependentGraph(object):
       for attribute in attributeSet:
         yield attribute
 
-  def _getLayeredDependentsForAttribute(self):
-    dependents = self._getDependentSet(self._definition)
-    self._addDependencies(dependents)
+  def _buildDependentsLayers(self, attributes):
+    graphs = []
 
-    while self._dependentLayers[-1]:
-      dependents = self._getDependentsOfAll(self._dependentLayers[-1])
-      self._addDependencies(dependents)
+    for attribute in attributes:
+      graphs.append(self._buildLayersForAttribute(attribute))
+
+    layers = map(combineAttributeGraphs, *graphs)
+    return layers
+
+  def _buildLayersForAttribute(self, definition):
+    layers = []
+    dependents = self._getDependentSet(definition)
+    self._addDependencies(layers, dependents)
+
+    while layers[-1]:
+      dependents = self._getDependentsOfAll(layers[-1])
+      self._addDependencies(layers, dependents)
+
+    return layers
 
   def _getDependentSet(self, attributeDefinition):
     return set(attributeDefinition.dependents.all())
 
-  def _addDependencies(self, dependents):
+  def _addDependencies(self, layers, dependents):
     dependencyList = set()
     for dependent in dependents:
       dependencyList.add(dependent.attribute)
-    self._dependentLayers.append(dependencyList)
+    layers.append(dependencyList)
 
   def _getDependentsOfAll(self, attributeDefinitions):
     allDependents = set()
@@ -45,4 +67,5 @@ class AttributeDependentGraph(object):
       culledLayers.insert(0, dependentLayer)
 
     self._dependentLayers = culledLayers
+
 
