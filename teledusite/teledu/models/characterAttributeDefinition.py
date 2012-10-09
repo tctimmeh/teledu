@@ -1,5 +1,5 @@
 from django.db import models
-from .gameSystem import GameSystem
+from teledu.models import GameSystem
 from teledu.models.dataType import DataType
 
 class CharacterAttributeDefinition(models.Model):
