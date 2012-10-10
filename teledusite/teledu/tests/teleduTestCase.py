@@ -1,6 +1,6 @@
 import random, string
 from django.test import TestCase
-from teledu.models import GameSystem, CharacterAttributeDefinition, Character, CharacterAttribute, CharacterSheet, CharacterAttributeDependency
+from teledu.models import GameSystem, CharacterAttributeDefinition, Character, CharacterAttribute, CharacterSheet, CharacterAttributeDependency, GameSystemConcept
 from teledu.models.dataType import DataType
 
 random.seed(0x5ADB0075)
@@ -15,6 +15,7 @@ class TeleduTestCase(TestCase):
     self.attributeValue = self.uniqStr()
     self.charAttr = self.createAttrForCharacter(self.attributeDefinition, self.character, self.attributeValue)
     self.charSheetTemplate = self.createCharacterSheetTemplate()
+    self.concept = self.createConcept()
 
   def uniqInt(self):
     return random.randint(9, 999999999)
@@ -27,7 +28,7 @@ class TeleduTestCase(TestCase):
   def createGameSystem(self):
     return GameSystem.objects.create(name = self.uniqStr())
 
-  def createAttrDefinition(self, gameSystem = None, calcFunction = None, name = None, type = 'text', default = ''):
+  def createAttrDefinition(self, gameSystem = None, calcFunction = None, name = None, type = 'text', default = '', concept = None):
     if gameSystem is None:
       gameSystem = self.gameSystem
     if name is None:
@@ -36,7 +37,7 @@ class TeleduTestCase(TestCase):
     dataType = DataType.objects.get(name = type)
 
     return CharacterAttributeDefinition.objects.create(pk = self.uniqInt(), gameSystem = gameSystem, name = name,
-      calcFunction = calcFunction, dataType = dataType, default = default)
+      calcFunction = calcFunction, dataType = dataType, default = default, concept = concept)
 
   def createCharacter(self):
     return Character.objects.create(name = self.uniqStr())
@@ -53,8 +54,15 @@ class TeleduTestCase(TestCase):
       gameSystem = self.gameSystem
     return CharacterSheet.objects.create(gameSystem = gameSystem, name = self.uniqStr(), template = self.uniqStr())
 
-  def addAttrDefinition(self, dependencies = [], calcFunction = None, name = None, default = '', type = 'text'):
-    attr = self.createAttrDefinition(calcFunction = calcFunction, name = name, type = type, default = default)
+  def createConcept(self, gameSystem = None, name = None):
+    if gameSystem is None:
+      gameSystem = self.gameSystem
+    if name is None:
+      name = self.uniqStr()
+    return GameSystemConcept.objects.create(gameSystem = gameSystem, name = name)
+
+  def addAttrDefinition(self, dependencies = [], calcFunction = None, name = None, default = '', type = 'text', concept = None):
+    attr = self.createAttrDefinition(calcFunction = calcFunction, name = name, type = type, default = default, concept = concept)
     self.createAttrForCharacter(attrDefinition = attr)
     for dependency in dependencies:
       CharacterAttributeDependency.objects.create(attribute = attr, dependency = dependency)

@@ -1,7 +1,7 @@
 import json
 from django.db import models
-from characterAttributeDefinition import CharacterAttributeDefinition
 from .lib import AttributeDependentGraph
+from characterAttributeDefinition import CharacterAttributeDefinition
 
 class Character(models.Model):
   name = models.CharField(max_length = 50)
@@ -22,9 +22,16 @@ class Character(models.Model):
 
   @classmethod
   def create(cls, gameSystem, name):
+    from teledu.models import ConceptInstance
+
     newCharacter = Character.objects.create(name = name)
-    for attribute in CharacterAttributeDefinition.objects.filter(gameSystem = gameSystem):
-      CharacterAttribute.objects.create(character = newCharacter, definition = attribute, raw_value = attribute.default)
+    for attributeDefinition in CharacterAttributeDefinition.objects.filter(gameSystem = gameSystem):
+      if attributeDefinition.dataType.isConcept():
+        defaultValue = ConceptInstance.objects.get(name = attributeDefinition.default, concept = attributeDefinition.concept).id
+      else:
+        defaultValue = attributeDefinition.default
+
+      CharacterAttribute.objects.create(character = newCharacter, definition = attributeDefinition, raw_value = defaultValue)
     return newCharacter
 
   def serialize(self):

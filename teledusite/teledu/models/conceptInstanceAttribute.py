@@ -1,5 +1,6 @@
 from django.db import models
-from teledu.models import ConceptAttributeDefinition, ConceptInstance
+from conceptAttributeDefinition import ConceptAttributeDefinition
+from conceptInstance import ConceptInstance
 
 class ConceptInstanceAttribute(models.Model):
   definition = models.ForeignKey(ConceptAttributeDefinition)

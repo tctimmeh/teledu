@@ -1,5 +1,6 @@
 from django.db import models
-from teledu.models import  GameSystemConcept, DataType
+from gameSystemConcept import  GameSystemConcept
+from dataType import DataType
 
 class ConceptAttributeDefinition(models.Model):
   concept = models.ForeignKey(GameSystemConcept)

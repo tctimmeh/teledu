@@ -1,5 +1,5 @@
 from django.db import models
-from teledu.models import GameSystem
+from gameSystem import GameSystem
 
 class GameSystemConcept(models.Model):
   gameSystem = models.ForeignKey(GameSystem, verbose_name = 'Game System')

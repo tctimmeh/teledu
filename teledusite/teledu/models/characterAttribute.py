@@ -1,8 +1,8 @@
 import json
 from django.db import models
 
-from .character import Character
-from .characterAttributeDefinition import CharacterAttributeDefinition
+from character import Character
+from characterAttributeDefinition import CharacterAttributeDefinition
 
 class CharacterAttribute(models.Model):
   character = models.ForeignKey(Character)
