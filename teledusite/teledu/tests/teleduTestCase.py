@@ -1,6 +1,6 @@
 import random, string
 from django.test import TestCase
-from teledu.models import GameSystem, CharacterAttributeDefinition, Character, CharacterAttribute, CharacterSheet, CharacterAttributeDependency, GameSystemConcept
+from teledu.models import GameSystem, CharacterAttributeDefinition, Character, CharacterAttribute, CharacterSheet, CharacterAttributeDependency, GameSystemConcept, DataType, ConceptAttributeDefinition
 from teledu.models.dataType import DataType
 
 random.seed(0x5ADB0075)
@@ -16,6 +16,7 @@ class TeleduTestCase(TestCase):
     self.charAttr = self.createAttrForCharacter(self.attributeDefinition, self.character, self.attributeValue)
     self.charSheetTemplate = self.createCharacterSheetTemplate()
     self.concept = self.createConcept()
+    self.conceptAttrDefn = self.createConceptAttrDefn()
 
   def uniqInt(self):
     return random.randint(9, 999999999)
@@ -68,4 +69,12 @@ class TeleduTestCase(TestCase):
       CharacterAttributeDependency.objects.create(attribute = attr, dependency = dependency)
     return attr
 
+  def createConceptAttrDefn(self, concept = None, name = None, type = 'integer'):
+    if concept is None:
+      concept = self.concept
+    if name is None:
+      name = self.uniqStr()
+
+    dataType = DataType.objects.get(name = type)
+    return ConceptAttributeDefinition.objects.create(concept=concept, name=name, dataType=dataType)
 
