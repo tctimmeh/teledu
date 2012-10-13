@@ -3,4 +3,5 @@ venv
 *.py[co]
 .idea
 *.vpp*
-*.db
+*.db*
+*.log

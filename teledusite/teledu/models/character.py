@@ -37,9 +37,9 @@ class Character(models.Model):
   def serialize(self):
     attributes = CharacterAttribute.objects.filter(character = self)
     return json.dumps({
-      'id': self.id,
-      'name': self.name,
-      'attributes': [attribute.asDict() for attribute in attributes],
+#      'id': self.id,
+#      'name': self.name,
+#      'attributes': [attribute.asDict() for attribute in attributes],
     })
 
   def getAttributeValueByName(self, attributeName):
