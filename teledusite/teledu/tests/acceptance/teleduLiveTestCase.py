@@ -50,13 +50,27 @@ class TeleduLiveTestCase(LiveServerTestCase, TestHelpers):
   def elementHasText(self, element, expected):
     return element.text == expected
 
+  def assertElementTextIs(self, element, expected):
+    self.assertEqual(element.text, unicode(expected))
+
   def assertLinkGoesHome(self, link):
     self.assertLinkGoesToUrl(link, '')
 
   def assertLinkGoesToUrl(self, link, expectedUrl):
     link.click()
-    self.assertEqual(self.driver.current_url, self.url(expectedUrl))
+    self.assertLocationIs(expectedUrl)
 
   def assertPageTitleIs(self, expected):
     self.assertEqual(self.driver.title, expected)
+
+  def assertLocationIs(self, expected):
+    self.assertEqual(self.driver.current_url, self.url(expected))
+
+  def assertFormFieldHasRequiredError(self, element):
+    errorList = element.find_element_by_xpath("preceding-sibling::*[@class='errorlist']")
+    self.assertEqual(errorList.text, "This field is required.")
+
+  def submitForm(self):
+    submitButton = self.driver.find_element_by_xpath("//input[@type='submit']")
+    submitButton.click()
 

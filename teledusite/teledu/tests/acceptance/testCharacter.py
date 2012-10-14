@@ -37,19 +37,19 @@ class TestCharacterSheet(TeleduLiveTestCase):
 
   def testCharacterNameIsOnPage(self):
     nameElement = self.driver.find_element_by_id('attr_name')
-    self.assertEqual(nameElement.text, self.character.name)
+    self.assertElementTextIs(nameElement, self.character.name)
 
   def testTextAttributesOnPage(self):
     element = self.driver.find_element_by_id('attr_%d' % self.charAttrDefn.id)
-    self.assertEqual(element.text, self.charAttr.raw_value)
+    self.assertElementTextIs(element, self.charAttr.raw_value)
 
   def testIntegerAttributesOnPage(self):
     element = self.driver.find_element_by_id('attr_%d' % self.intCharAttrDefn.id)
-    self.assertEqual(int(element.text), int(self.intCharAttr.raw_value))
+    self.assertElementTextIs(element, int(self.intCharAttr.raw_value))
 
   def testConceptAttributeOnPageAsConceptInstanceName(self):
     element = self.driver.find_element_by_id('attr_%d' % self.conceptCharAttrDefn.id)
-    self.assertEqual(element.text, self.conceptInstance.name)
+    self.assertElementTextIs(element, self.conceptInstance.name)
 
   def testEditingTextAttributeChangesCharacterInDatabase(self):
     expected = self.uniqStr()
