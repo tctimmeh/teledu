@@ -13,9 +13,7 @@ class ConceptInstance(models.Model):
     app_label = 'teledu'
 
   def __unicode__(self):
-    if not len(self.attributes.all()):
-      return 'Uninitialized concept instance - %s' % self.name
-    return '%s - %s - %s' % (self.attributes.all()[0].concept.gameSystem.name, self.attributes.all()[0].concept.name, self.name)
+    return '%s - %s - %s' % (self.concept.gameSystem.name, self.concept.name, self.name)
 
   def gameSystem(self):
     return self.concept.gameSystem

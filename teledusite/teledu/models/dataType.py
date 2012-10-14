@@ -13,6 +13,8 @@ class DataType(models.Model):
     from teledu.models import ConceptInstance
     # These magic numbers must match those found in the initial_data.json fixture
     if self.id == 4:
+      if not value:
+        return ''
       return ConceptInstance.objects.get(pk = int(value)).name
     elif self.id == 3:
       return float(value)

@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext, Template
 from django.template.loader import get_template
-from models import Character, CharacterSheet, CharacterAttribute, GameSystem, CharacterAttributeDefinition
+from models import Character, CharacterSheet, GameSystem, CharacterAttributeDefinition
 
 def welcome(request):
   return render(request, 'welcome.html', {'characters': Character.objects.all()})
