@@ -2,13 +2,15 @@ import unittest, os
 from django.db.models import get_app
 from django.test.simple import DjangoTestSuiteRunner, build_test, build_suite
 from django.utils.unittest.suite import TestSuite
+from teledu.tests.acceptance.teleduLiveTestCase import TeleduLiveTestCase
 
 class TeleduTestRunner(DjangoTestSuiteRunner):
   testPath = os.path.split(__file__)[0]
 
   def _loadTestsFromLabel(self, label):
     testPath = os.path.join(self.testPath, label)
-    return unittest.TestLoader().discover(start_dir = testPath)
+    suite = unittest.TestLoader().discover(start_dir = testPath)
+    return suite
 
   def build_suite(self, test_labels, extra_tests=None, **kwargs):
     if not test_labels:

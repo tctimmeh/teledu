@@ -1,4 +1,4 @@
-from teledu.tests.acceptance.teleduLiveTestCase import TeleduLiveTestCase
+from teleduLiveTestCase import TeleduLiveTestCase, setUpModule
 
 class TestWelcomePage(TeleduLiveTestCase):
   def testPageHasWelcomeTitle(self):

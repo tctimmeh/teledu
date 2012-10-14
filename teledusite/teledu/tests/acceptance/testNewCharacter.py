@@ -1,6 +1,6 @@
 from selenium.webdriver.support.select import Select
 from teledu.models import Character
-from teledu.tests.acceptance.teleduLiveTestCase import TeleduLiveTestCase
+from teleduLiveTestCase import TeleduLiveTestCase, setUpModule
 
 class TestNewCharacterPage(TeleduLiveTestCase):
   def setUp(self):

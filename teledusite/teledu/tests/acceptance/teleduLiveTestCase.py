@@ -1,8 +1,19 @@
-from django.core.urlresolvers import reverse
+import atexit
 from django.test import LiveServerTestCase
 from selenium.webdriver.chrome.webdriver import WebDriver
 from teledu.tests.testHelpers import TestHelpers
-from teledu.views import welcome
+
+driver = None
+def setUpModule():
+  global driver
+  if driver is None:
+    driver = WebDriver()
+
+def stopDriver():
+  global driver
+  if driver is not None:
+    driver.quit()
+atexit.register(stopDriver)
 
 class TeleduLiveTestCase(LiveServerTestCase, TestHelpers):
   urls = 'teledu.urls'
@@ -14,15 +25,8 @@ class TeleduLiveTestCase(LiveServerTestCase, TestHelpers):
   @classmethod
   def setUpClass(cls):
     super(TeleduLiveTestCase, cls).setUpClass()
-    cls.driver = WebDriver()
-
-  @classmethod
-  def tearDownClass(cls):
-    try:
-      cls.driver.quit()
-    except Exception, e:
-      pass
-    super(TeleduLiveTestCase, cls).tearDownClass()
+    global driver
+    cls.driver = driver
 
   def url(self, path = ''):
     return '%s/%s' % (self.live_server_url, path)
