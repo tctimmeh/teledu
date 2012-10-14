@@ -14,7 +14,8 @@ class TestHelpers(object):
   def createGameSystem(self):
     return GameSystem.objects.create(name = self.uniqStr())
 
-  def createAttrDefinition(self, gameSystem = None, calcFunction = None, name = None, type = 'text', default = '', concept = None):
+  def createAttrDefinition(self, gameSystem = None, calcFunction = None, name = None, type = 'text', default = '',
+                           concept = None, dependencies = []):
     if gameSystem is None:
       gameSystem = self.gameSystem
     if name is None:
@@ -22,8 +23,11 @@ class TestHelpers(object):
 
     dataType = DataType.objects.get(name = type)
 
-    return CharacterAttributeDefinition.objects.create(pk = self.uniqInt(), gameSystem = gameSystem, name = name,
+    definition = CharacterAttributeDefinition.objects.create(pk = self.uniqInt(), gameSystem = gameSystem, name = name,
       calcFunction = calcFunction, dataType = dataType, default = default, concept = concept)
+    for dependency in dependencies:
+      CharacterAttributeDependency.objects.create(attribute = definition, dependency = dependency)
+    return definition
 
   def createCharacter(self):
     return Character.objects.create(name = self.uniqStr())
@@ -48,11 +52,10 @@ class TestHelpers(object):
     return GameSystemConcept.objects.create(gameSystem = gameSystem, name = name)
 
   def addAttrDefinition(self, dependencies = [], calcFunction = None, name = None, default = '', type = 'text', concept = None):
-    attr = self.createAttrDefinition(calcFunction = calcFunction, name = name, type = type, default = default, concept = concept)
-    self.createAttrForCharacter(attrDefinition = attr)
-    for dependency in dependencies:
-      CharacterAttributeDependency.objects.create(attribute = attr, dependency = dependency)
-    return attr
+    definition = self.createAttrDefinition(calcFunction = calcFunction, name = name, type = type, default = default,
+      concept = concept, dependencies = dependencies)
+    self.createAttrForCharacter(attrDefinition = definition)
+    return definition
 
   def createConceptAttrDefn(self, concept = None, name = None, type = 'integer'):
     if concept is None:
@@ -70,4 +73,8 @@ class TestHelpers(object):
       name = self.uniqStr()
 
     return ConceptInstance.objects.create(concept = concept, name = name)
+
+  def assertCharacterAttributeHasValue(self, attr, expected):
+    actual = CharacterAttribute.objects.get(pk = attr.id).raw_value
+    self.assertEqual(actual, expected)
 

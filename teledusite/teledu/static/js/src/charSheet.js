@@ -21,10 +21,10 @@ function editValue(value, settings) {
     type: 'POST',
     headers: {'X-CSRFToken': csrfToken},
     data: {'value': value},
-    dataType: 'json',
+    dataType: 'json'
   })
   .done(updateAttributes)
-  .fail(function() {alert("you stink");})
+  .fail(function() {alert("Updating attribute failed");})
   ;
 
   return value;
