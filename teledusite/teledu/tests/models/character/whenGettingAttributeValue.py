@@ -2,11 +2,11 @@ from teledu.tests.teleduTestCase import TeleduTestCase
 
 class WhenGettingCharacterAttributeValue(TeleduTestCase):
   def testThatAttributeValueIsReturnedWhenSpecifyingAttributeDefinitionId(self):
-    actual = self.character.getAttributeValueByDefinition(self.attributeDefinition.id)
+    actual = self.character.getAttributeValueByDefinition(self.charAttrDefn.id)
     self.assertEqual(actual, self.charAttr.value)
 
   def testThatAttributeValueIsReturnedWhenSpecifyingAttributeDefinition(self):
-    actual = self.character.getAttributeValueByDefinition(self.attributeDefinition)
+    actual = self.character.getAttributeValueByDefinition(self.charAttrDefn)
     self.assertEqual(actual, self.charAttr.value)
 
   def testThatEmptyValueIsReturnedForConceptAttributeWithEmptyRawValue(self):

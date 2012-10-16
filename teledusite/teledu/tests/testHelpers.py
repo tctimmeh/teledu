@@ -1,6 +1,6 @@
 import random
 import string
-from teledu.models import GameSystem, DataType, CharacterAttributeDefinition, Character, CharacterAttribute, CharacterSheet, GameSystemConcept, CharacterAttributeDependency, ConceptAttributeDefinition, ConceptInstance
+from teledu.models import GameSystem, DataType, CharacterAttributeDefinition, Character, CharacterAttribute, CharacterSheet, GameSystemConcept, CharacterAttributeDependency, ConceptAttributeDefinition, ConceptInstance, ConceptInstanceAttribute
 
 class TestHelpers(object):
   def uniqInt(self):
@@ -66,13 +66,18 @@ class TestHelpers(object):
     dataType = DataType.objects.get(name = type)
     return ConceptAttributeDefinition.objects.create(concept=concept, name=name, dataType=dataType)
 
-  def createConceptInstance(self, concept = None, name = None):
+  def createConceptInstance(self, concept = None, name = None, attributes = {}):
     if concept is None:
       concept = self.concept
     if name is None:
       name = self.uniqStr()
 
-    return ConceptInstance.objects.create(concept = concept, name = name)
+    instance = ConceptInstance.objects.create(concept = concept, name = name)
+    for definition, value in attributes.items():
+      conceptAttribute = ConceptInstanceAttribute.objects.get(definition = definition, instance = instance)
+      conceptAttribute.raw_value = value
+      conceptAttribute.save()
+    return instance
 
   def assertCharacterAttributeHasValue(self, attr, expected):
     actual = CharacterAttribute.objects.get(pk = attr.id).raw_value

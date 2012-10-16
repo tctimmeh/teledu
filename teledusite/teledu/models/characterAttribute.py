@@ -1,8 +1,8 @@
 import json
 from django.db import models
-
 from character import Character
 from characterAttributeDefinition import CharacterAttributeDefinition
+from lib import AttributeResolver
 
 class CharacterAttribute(models.Model):
   character = models.ForeignKey(Character)
@@ -25,25 +25,25 @@ class CharacterAttribute(models.Model):
         self.definition, self.raw_value, self.definition.dataType.name, e))
     return result
 
-  def asDict(self):
-   return {
-      'id': self.definition.id,
-      'name': self.definition.name,
-      'value': self.raw_value,
-    }
+#  def asDict(self):
+#   return {
+#      'id': self.definition.id,
+#      'name': self.definition.name,
+#      'value': self.raw_value,
+#    }
 
   def serialize(self):
     return json.dumps(self.asDict())
 
-  def calculateNewValue(self, char, **kwargs):
+  def calculateNewValue(self, **kwargs):
     if self.definition.calcFunction:
-      newValue = self._execCalcFunction(char, kwargs)
+      newValue = self._execCalcFunction(kwargs)
       self.raw_value = newValue
 
     return self.raw_value
 
-  def _execCalcFunction(self, char, scope):
-    scope['attr'] = lambda name: char.getAttributeValueByName(name)
+  def _execCalcFunction(self, scope):
+    scope['attr'] = lambda name: AttributeResolver(self.character).getAttributeValue(name)
     scope['result'] = None
     exec self.definition.calcFunction in scope
     return scope['result']

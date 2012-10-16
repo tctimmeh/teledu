@@ -4,7 +4,7 @@ from teledu.tests.teleduTestCase import TeleduTestCase
 class WhenRecalculatingAttributes(TeleduTestCase):
   def testThatAllAttributesAreRecalculated(self):
     expected = self.uniqStr()
-    attr = self.addAttrDefnToCharacter(dependencies=[self.attributeDefinition], calcFunction='result = "%s"' % expected)
+    attr = self.addAttrDefnToCharacter(dependencies=[self.charAttrDefn], calcFunction='result = "%s"' % expected)
     attr2 = self.addAttrDefnToCharacter(dependencies=[attr], calcFunction='result = "%s"' % expected)
 
     self.character.recalculateAllAttributes()

@@ -13,7 +13,7 @@ class WhenSettingAttribute(TeleduTestCase):
     if characterId is None:
       characterId = self.character.id
     if attributeId is None:
-      attributeId = self.attributeDefinition.id
+      attributeId = self.charAttrDefn.id
     if value is None:
       value = self.uniqStr()
 
@@ -37,12 +37,12 @@ class WhenSettingAttribute(TeleduTestCase):
     self.assertEqual(actual, self.newValue)
 
   def testThatResponseContainsJsonObjectOfEveryChangedAttribute(self):
-    dependentAttribute = self.addAttrDefnToCharacter(dependencies=[self.attributeDefinition], default = self.uniqStr())
+    dependentAttribute = self.addAttrDefnToCharacter(dependencies=[self.charAttrDefn], default = self.uniqStr())
 
     value = self.uniqStr()
     response = self._doRequest(value = value)
     expected = json.dumps({
-      self.attributeDefinition.id: value,
+      self.charAttrDefn.id: value,
       dependentAttribute.id: CharacterAttribute.objects.get(character = self.character, definition = dependentAttribute).value
     })
     actual = response.content

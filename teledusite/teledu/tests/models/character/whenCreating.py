@@ -8,7 +8,7 @@ class WhenCreatingCharacter(TeleduTestCase):
 
     self.conceptInstance = ConceptInstance.objects.create(name = self.uniqStr(), concept = self.concept)
 
-    self.charAttrDefn = self.addAttrDefnToCharacter(type = 'concept', concept = self.concept, default = self.conceptInstance.name)
+    self.conceptAttrDefn = self.addAttrDefnToCharacter(type = 'concept', concept = self.concept, default = self.conceptInstance.name)
     self.noDefaultDefn = self.createAttrDefinition(type = 'concept', concept = self.concept)
     self.character = Character.create(gameSystem = self.gameSystem, name = self.name)
 
@@ -19,15 +19,15 @@ class WhenCreatingCharacter(TeleduTestCase):
     self.assertEqual(self.character.name, self.name)
 
   def testThatCharacterHasAttributesForGivenGameSystem(self):
-    actual = CharacterAttribute.objects.filter(character = self.character, definition = self.attributeDefinition)
+    actual = CharacterAttribute.objects.filter(character = self.character, definition = self.charAttrDefn)
     self.assertGreater(len(actual), 0)
 
   def testThatAttributesGetDefaultValues(self):
-    actual = CharacterAttribute.objects.get(character = self.character, definition = self.attributeDefinition)
-    self.assertEqual(actual.raw_value, self.attributeDefinition.default)
+    actual = CharacterAttribute.objects.get(character = self.character, definition = self.charAttrDefn)
+    self.assertEqual(actual.raw_value, self.charAttrDefn.default)
 
   def testThatConceptTypeAttributesGetIdOfNamedConceptInstance(self):
-    actual = CharacterAttribute.objects.get(character = self.character, definition = self.charAttrDefn)
+    actual = CharacterAttribute.objects.get(character = self.character, definition = self.conceptAttrDefn)
     self.assertEqual(int(actual.raw_value), self.conceptInstance.id)
 
   def testThatConceptTypeAttributesGetEmptyValueForDefinitionsWithNoDefault(self):

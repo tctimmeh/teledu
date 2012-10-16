@@ -4,7 +4,7 @@ class WhenGettingSimpleValue(TeleduTestCase):
   def _calculateAttrFunctionForDefinition(self, definition):
     calculatedDefinition = self.addAttrDefnToCharacter(calcFunction = "result = attr('%s')" % definition.name)
     attribute = self.getCharacterAttributeForDefinition(calculatedDefinition)
-    return attribute.calculateNewValue(self.character)
+    return attribute.calculateNewValue()
 
   def testGettingTextAttributeReturnsAttributeValueAsString(self):
     sourceDefinition = self.addAttrDefnToCharacter(default = self.uniqStr())

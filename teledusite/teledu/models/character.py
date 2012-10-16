@@ -80,7 +80,7 @@ class Character(models.Model):
 
   def _calculateAttributeValue(self, attrDefn):
     attribute = CharacterAttribute.objects.get(character = self, definition = attrDefn)
-    attribute.calculateNewValue(char = self)
+    attribute.calculateNewValue()
     attribute.save()
     return attribute.raw_value
 

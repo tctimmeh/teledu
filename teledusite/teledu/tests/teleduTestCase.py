@@ -9,10 +9,10 @@ class TeleduTestCase(TestCase, TestHelpers):
 
   def setUp(self):
     self.gameSystem = self.createGameSystem()
-    self.attributeDefinition = self.createAttrDefinition(self.gameSystem)
     self.character = self.createCharacter()
-    self.attributeValue = self.uniqStr()
-    self.charAttr = self.createAttrForCharacter(self.attributeDefinition, self.character, self.attributeValue)
+    self.charAttrDefn = self.createAttrDefinition(self.gameSystem)
+    self.charAttrValue = self.uniqStr()
+    self.charAttr = self.createAttrForCharacter(self.charAttrDefn, self.character, self.charAttrValue)
     self.charSheetTemplate = self.createCharacterSheetTemplate()
     self.concept = self.createConcept()
     self.conceptAttrDefn = self.createConceptAttrDefn()
