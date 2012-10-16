@@ -8,7 +8,7 @@ class WhenCreatingCharacter(TeleduTestCase):
 
     self.conceptInstance = ConceptInstance.objects.create(name = self.uniqStr(), concept = self.concept)
 
-    self.charAttrDefn = self.addAttrDefinition(type = 'concept', concept = self.concept, default = self.conceptInstance.name)
+    self.charAttrDefn = self.addAttrDefnToCharacter(type = 'concept', concept = self.concept, default = self.conceptInstance.name)
     self.noDefaultDefn = self.createAttrDefinition(type = 'concept', concept = self.concept)
     self.character = Character.create(gameSystem = self.gameSystem, name = self.name)
 

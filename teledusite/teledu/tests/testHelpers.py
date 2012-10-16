@@ -51,10 +51,10 @@ class TestHelpers(object):
       name = self.uniqStr()
     return GameSystemConcept.objects.create(gameSystem = gameSystem, name = name)
 
-  def addAttrDefinition(self, dependencies = [], calcFunction = None, name = None, default = '', type = 'text', concept = None):
+  def addAttrDefnToCharacter(self, dependencies = [], calcFunction = None, name = None, default = '', type = 'text', concept = None, character = None):
     definition = self.createAttrDefinition(calcFunction = calcFunction, name = name, type = type, default = default,
       concept = concept, dependencies = dependencies)
-    self.createAttrForCharacter(attrDefinition = definition)
+    self.createAttrForCharacter(attrDefinition = definition, character = character)
     return definition
 
   def createConceptAttrDefn(self, concept = None, name = None, type = 'integer'):
@@ -77,4 +77,14 @@ class TestHelpers(object):
   def assertCharacterAttributeHasValue(self, attr, expected):
     actual = CharacterAttribute.objects.get(pk = attr.id).raw_value
     self.assertEqual(actual, expected)
+
+  def getCharacterAttributeForDefinition(self, definition, character = None):
+    if character is None:
+      character = self.character
+
+    return CharacterAttribute.objects.get(definition = definition, character = character)
+
+  def getCharacterAttributeValueByDefinition(self, definition, character = None):
+    attribute = self.getCharacterAttributeForDefinition(definition, character)
+    return attribute.value
 

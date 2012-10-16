@@ -37,7 +37,7 @@ class WhenSettingAttribute(TeleduTestCase):
     self.assertEqual(actual, self.newValue)
 
   def testThatResponseContainsJsonObjectOfEveryChangedAttribute(self):
-    dependentAttribute = self.addAttrDefinition(dependencies=[self.attributeDefinition], default = self.uniqStr())
+    dependentAttribute = self.addAttrDefnToCharacter(dependencies=[self.attributeDefinition], default = self.uniqStr())
 
     value = self.uniqStr()
     response = self._doRequest(value = value)

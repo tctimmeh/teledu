@@ -12,9 +12,9 @@ class WhenGettingAttributes(TeleduTestCase):
       self.assertEqual(actualLayer, expectedLayer)
 
   def testThatDependentsAreListedAfterDependencies(self):
-    attrA = self.addAttrDefinition()
-    attrB = self.addAttrDefinition([attrA])
-    attrC = self.addAttrDefinition([attrB])
+    attrA = self.addAttrDefnToCharacter()
+    attrB = self.addAttrDefnToCharacter([attrA])
+    attrC = self.addAttrDefnToCharacter([attrB])
     expected = [attrB, attrC]
 
     graph = AttributeDependentGraph(attrA)
@@ -22,10 +22,10 @@ class WhenGettingAttributes(TeleduTestCase):
     self.assertEqual(actual, expected)
 
   def testThatDependentsOfManyAttributesAreListedAtTheirLatestPosition(self):
-    attrA = self.addAttrDefinition()
-    attrB = self.addAttrDefinition([attrA])
-    attrC = self.addAttrDefinition([attrA, attrB])
-    attrD = self.addAttrDefinition([attrC])
+    attrA = self.addAttrDefnToCharacter()
+    attrB = self.addAttrDefnToCharacter([attrA])
+    attrC = self.addAttrDefnToCharacter([attrA, attrB])
+    attrD = self.addAttrDefnToCharacter([attrC])
     expected = [attrB, attrC, attrD]
 
     graph = AttributeDependentGraph(attrA)
@@ -33,13 +33,13 @@ class WhenGettingAttributes(TeleduTestCase):
     self.assertEqual(actual, expected)
 
   def testThatDependentsOfAllAttributesAreListed(self):
-    pathAFirst = self.addAttrDefinition()
-    pathASecond = self.addAttrDefinition([pathAFirst])
-    pathAThird = self.addAttrDefinition([pathASecond])
-    pathBFirst = self.addAttrDefinition()
-    pathBSecond = self.addAttrDefinition([pathBFirst])
-    pathBThird = self.addAttrDefinition([pathBSecond])
-    bottomAttr = self.addAttrDefinition([pathASecond, pathBThird])
+    pathAFirst = self.addAttrDefnToCharacter()
+    pathASecond = self.addAttrDefnToCharacter([pathAFirst])
+    pathAThird = self.addAttrDefnToCharacter([pathASecond])
+    pathBFirst = self.addAttrDefnToCharacter()
+    pathBSecond = self.addAttrDefnToCharacter([pathBFirst])
+    pathBThird = self.addAttrDefnToCharacter([pathBSecond])
+    bottomAttr = self.addAttrDefnToCharacter([pathASecond, pathBThird])
     expected = [[pathASecond, pathBSecond], [pathAThird, pathBThird], [bottomAttr]]
 
     graph = AttributeDependentGraph([pathAFirst, pathBFirst])

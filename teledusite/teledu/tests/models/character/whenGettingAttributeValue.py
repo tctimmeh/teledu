@@ -10,6 +10,6 @@ class WhenGettingCharacterAttributeValue(TeleduTestCase):
     self.assertEqual(actual, self.charAttr.value)
 
   def testThatEmptyValueIsReturnedForConceptAttributeWithEmptyRawValue(self):
-    definition = self.addAttrDefinition(type = 'concept', concept = self.concept)
+    definition = self.addAttrDefnToCharacter(type = 'concept', concept = self.concept)
     actual = self.character.getAttributeValueByDefinition(definition)
     self.assertEqual(actual, '')

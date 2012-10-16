@@ -7,7 +7,7 @@ class WhenSettingCharacterAttributeValue(TeleduTestCase):
     return int(CharacterAttribute.objects.get(character = self.character, definition = attrDefn).raw_value)
     
   def testThatAttributeHasNewValue(self):
-    attrA = self.addAttrDefinition()
+    attrA = self.addAttrDefnToCharacter()
 
     expected = random.randint(2, 20)
     self.character.setAttributeValue(attrA, expected)
@@ -17,8 +17,8 @@ class WhenSettingCharacterAttributeValue(TeleduTestCase):
 
   def testThatDirectDependentsCalculateNewValues(self):
     # A <- B
-    attrA = self.addAttrDefinition()
-    attrB = self.addAttrDefinition([attrA], 'result = int(attr("%s")) + 1' % attrA.name)
+    attrA = self.addAttrDefnToCharacter()
+    attrB = self.addAttrDefnToCharacter([attrA], 'result = int(attr("%s")) + 1' % attrA.name)
 
     expected = random.randint(2, 20)
     self.character.setAttributeValue(attrA, expected)
@@ -29,9 +29,9 @@ class WhenSettingCharacterAttributeValue(TeleduTestCase):
 
   def testThatIndirectDependentsCalculateNewValues(self):
     # A <- B <- C
-    attrA = self.addAttrDefinition()
-    attrB = self.addAttrDefinition([attrA], 'result = int(attr("%s")) + 1' % attrA.name)
-    attrC = self.addAttrDefinition([attrB], 'result = int(attr("%s")) + 1' % attrB.name)
+    attrA = self.addAttrDefnToCharacter()
+    attrB = self.addAttrDefnToCharacter([attrA], 'result = int(attr("%s")) + 1' % attrA.name)
+    attrC = self.addAttrDefnToCharacter([attrB], 'result = int(attr("%s")) + 1' % attrB.name)
 
     expected = random.randint(2, 20)
     self.character.setAttributeValue(attrA, expected)
@@ -46,10 +46,10 @@ class WhenSettingCharacterAttributeValue(TeleduTestCase):
     # A   D
     #  \ /
     #   C
-    attrA = self.addAttrDefinition()
-    attrB = self.addAttrDefinition([attrA], 'result = int(attr("%s")) + 1' % attrA.name)
-    attrC = self.addAttrDefinition([attrA], 'result = int(attr("%s")) + 2' % attrA.name)
-    attrD = self.addAttrDefinition([attrB, attrC], 'result = int(attr("%s")) * int(attr("%s"))' % (attrB.name, attrC.name))
+    attrA = self.addAttrDefnToCharacter()
+    attrB = self.addAttrDefnToCharacter([attrA], 'result = int(attr("%s")) + 1' % attrA.name)
+    attrC = self.addAttrDefnToCharacter([attrA], 'result = int(attr("%s")) + 2' % attrA.name)
+    attrD = self.addAttrDefnToCharacter([attrB, attrC], 'result = int(attr("%s")) * int(attr("%s"))' % (attrB.name, attrC.name))
 
     setValue = random.randint(2, 20)
     self.character.setAttributeValue(attrA, setValue)
@@ -62,9 +62,9 @@ class WhenSettingCharacterAttributeValue(TeleduTestCase):
     #   B
     #  / \
     # A<--C
-    attrA = self.addAttrDefinition()
-    attrB = self.addAttrDefinition([attrA], 'result = int(attr("%s")) + 1' % attrA.name)
-    attrC = self.addAttrDefinition([attrA, attrB], 'result = int(attr("%s")) * int(attr("%s"))' % (attrA.name, attrB.name))
+    attrA = self.addAttrDefnToCharacter()
+    attrB = self.addAttrDefnToCharacter([attrA], 'result = int(attr("%s")) + 1' % attrA.name)
+    attrC = self.addAttrDefnToCharacter([attrA, attrB], 'result = int(attr("%s")) * int(attr("%s"))' % (attrA.name, attrB.name))
 
     setValue = random.randint(2, 20)
     self.character.setAttributeValue(attrA, setValue)
