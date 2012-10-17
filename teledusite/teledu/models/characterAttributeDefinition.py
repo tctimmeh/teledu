@@ -10,6 +10,7 @@ class CharacterAttributeDefinition(models.Model):
   concept = models.ForeignKey(GameSystemConcept, null = True, blank = True)
   default = models.CharField(max_length = 50, blank = True, default = '')
   calcFunction = models.TextField(null = True, blank = True, default = None, verbose_name = 'Calculation')
+  display = models.BooleanField(default = True)
 
   class Meta:
     app_label = 'teledu'

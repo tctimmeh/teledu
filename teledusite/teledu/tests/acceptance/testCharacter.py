@@ -63,7 +63,6 @@ class TestCharacterSheet(TeleduLiveTestCase):
     self.editAttributeAndWaitForChange(self.charAttrDefn, expected, changeDefinition = self.dependentCharAttrDefn)
     self.assertCharacterAttributeHasValue(self.dependentCharAttr, expected)
 
-  @unittest.expectedFailure
   def testAttributeMarkedAsHiddenDoesNotAppearOnCharacterSheet(self):
     self.charAttrDefn.display = False
     self.charAttrDefn.save()

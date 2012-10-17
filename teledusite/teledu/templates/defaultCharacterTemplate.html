@@ -14,10 +14,12 @@
     </thead>
     <tbody>
       {% for attribute in character.attributes.all %}
-        <tr>
-          <td>{{ attribute.name }}</td>
-          <td>{% char_attr attribute %}</td>
-        </tr>
+        {% if attribute.display %}
+          <tr>
+            <td>{{ attribute.name }}</td>
+            <td>{% char_attr attribute %}</td>
+          </tr>
+        {% endif %}
       {% endfor %}
     </tbody>
   </table>
