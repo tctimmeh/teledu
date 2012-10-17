@@ -18,7 +18,7 @@ class TestDeleteCharacterPage(TeleduLiveTestCase):
     self.assertRaises(ObjectDoesNotExist, Character.objects.get, pk = self.character.id)
 
   def testCancelButtonDoesNotDeleteCharacter(self):
-    startingUrl = 'http://localhost/nothing'
+    startingUrl = self.url('character')
     self.driver.get(startingUrl)
     self.driver.get(self.url('character/%d/delete' % self.character.id))
 

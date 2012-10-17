@@ -1,3 +1,5 @@
+import unittest
+from selenium.common.exceptions import NoSuchElementException
 from teledu.models import CharacterAttribute
 from teleduLiveTestCase import TeleduLiveTestCase, setUpModule
 from selenium.webdriver.support.ui import WebDriverWait
@@ -61,4 +63,10 @@ class TestCharacterSheet(TeleduLiveTestCase):
     self.editAttributeAndWaitForChange(self.charAttrDefn, expected, changeDefinition = self.dependentCharAttrDefn)
     self.assertCharacterAttributeHasValue(self.dependentCharAttr, expected)
 
+  @unittest.expectedFailure
+  def testAttributeMarkedAsHiddenDoesNotAppearOnCharacterSheet(self):
+    self.charAttrDefn.display = False
+    self.charAttrDefn.save()
+    self.driver.refresh()
+    self.assertRaises(NoSuchElementException, self.driver.find_element_by_id, 'attr_%d' % self.charAttrDefn.id)
 
