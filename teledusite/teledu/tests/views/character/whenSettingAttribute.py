@@ -43,8 +43,21 @@ class WhenSettingAttribute(TeleduTestCase):
     response = self._doRequest(value = value)
     expected = json.dumps({
       self.charAttrDefn.id: value,
-      dependentAttribute.id: CharacterAttribute.objects.get(character = self.character, definition = dependentAttribute).value
+      dependentAttribute.id: self.getCharacterAttributeValueByDefinition(dependentAttribute),
     })
     actual = response.content
     self.assertEqual(actual, expected)
 
+  def testThatResponseContainsConceptInstanceNames(self):
+    instance1 = self.createConceptInstance(concept = self.concept)
+    instance2 = self.createConceptInstance(concept = self.concept)
+    changeDefinition = self.addAttrDefnToCharacter(type = 'concept', concept = self.concept, default = instance1.id)
+    dependentAttribute = self.addAttrDefnToCharacter(dependencies = [changeDefinition], type = 'concept', concept = self.concept, default = instance1.id)
+
+    response = self._doRequest(value = instance2.id, attributeId = changeDefinition.id)
+    expected = json.dumps({
+      changeDefinition.id: self.getCharacterAttributeValueByDefinition(changeDefinition),
+      dependentAttribute.id: self.getCharacterAttributeValueByDefinition(dependentAttribute),
+    })
+    actual = response.content
+    self.assertEqual(actual, expected)

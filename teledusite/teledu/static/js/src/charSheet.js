@@ -27,7 +27,7 @@ function editValue(value, settings) {
   .fail(function() {alert("Updating attribute failed");})
   ;
 
-  return value;
+  return '...';
 }
 
 function createEditables() {

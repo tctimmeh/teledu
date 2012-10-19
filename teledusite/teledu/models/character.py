@@ -38,14 +38,6 @@ class Character(models.Model):
       CharacterAttribute.objects.create(character = newCharacter, definition = attributeDefinition, raw_value = initialValue)
     return newCharacter
 
-  def serialize(self):
-    attributes = CharacterAttribute.objects.filter(character = self)
-    return json.dumps({
-#      'id': self.id,
-#      'name': self.name,
-#      'attributes': [attribute.asDict() for attribute in attributes],
-    })
-
   def getAttributeValueByName(self, attributeName):
     return CharacterAttribute.objects.get(character = self, definition__name = attributeName).value
 
@@ -60,7 +52,7 @@ class Character(models.Model):
     attrGraph = AttributeDependentGraph(attrDefinition)
 
     self._setAttr(attrDefinition, value)
-    changedAttributes = {attrDefinition.id: value}
+    changedAttributes = {attrDefinition.id: self.getAttributeValueByDefinition(attrDefinition)}
 
     for dep in attrGraph.items():
       newValue = self._calculateAttributeValue(dep)
@@ -82,7 +74,7 @@ class Character(models.Model):
     attribute = CharacterAttribute.objects.get(character = self, definition = attrDefn)
     attribute.calculateNewValue()
     attribute.save()
-    return attribute.raw_value
+    return attribute.value
 
 from characterAttribute import CharacterAttribute
 

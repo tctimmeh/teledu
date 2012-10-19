@@ -1,6 +1,7 @@
 import unittest
 from selenium.webdriver.support.select import Select
 from selenium.common.exceptions import NoSuchElementException
+from teledu.models import CharacterAttribute
 from teleduLiveTestCase import TeleduLiveTestCase, setUpModule
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -69,7 +70,6 @@ class TestCharacterSheet(TeleduLiveTestCase):
     self.driver.refresh()
     self.assertRaises(NoSuchElementException, self.driver.find_element_by_id, 'attr_%d' % self.charAttrDefn.id)
 
-  @unittest.expectedFailure
   def testChoosingNewValueForConceptAttributeUpdatesCharacterInDatabase(self):
     conceptInstance2 = self.createConceptInstance()
 
@@ -80,5 +80,8 @@ class TestCharacterSheet(TeleduLiveTestCase):
 
     select.select_by_visible_text(conceptInstance2.name)
     WebDriverWait(self.driver, 5).until(lambda driver: self.elementHasText(element, conceptInstance2.name))
-    self.assertCharacterAttributeHasValue(self.conceptCharAttrDefn, conceptInstance2.id)
+
+    expected = conceptInstance2.name
+    actual = CharacterAttribute.objects.get(character = self.character, definition = self.conceptCharAttrDefn).value
+    self.assertEqual(actual, expected)
 
