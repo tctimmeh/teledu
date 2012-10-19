@@ -1,11 +1,11 @@
 import json
 from django.core.urlresolvers import reverse
 from django.forms import ModelForm, ModelChoiceField
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext, Template
 from django.template.loader import get_template
-from models import Character, CharacterSheet, GameSystem, CharacterAttributeDefinition
+from models import Character, CharacterSheet, GameSystem, CharacterAttributeDefinition, ConceptInstance, CharacterAttribute, DataType
 
 def welcome(request):
   return render(request, 'welcome.html', {'characters': Character.objects.all()})
@@ -75,4 +75,22 @@ def deleteCharacter(request, charId):
     character.delete()
     return HttpResponseRedirect(reverse(welcome))
   return render(request, 'deleteCharacter.html', {'character': character})
+
+def getCharacterAttributeChoices(request, charId, attrId):
+  character = get_object_or_404(Character, id = charId)
+  try:
+    definition = character.attributes.get(id = attrId)
+  except CharacterAttributeDefinition.DoesNotExist:
+    raise Http404()
+
+  if definition.dataType.id != DataType.CONCEPT:
+    return HttpResponse('')
+
+  conceptInstances = ConceptInstance.objects.filter(concept = definition.concept)
+  out = {}
+  for instance in conceptInstances:
+    out[instance.id] = instance.name
+  out['selected'] = CharacterAttribute.objects.get(character = character, definition = definition).raw_value
+
+  return HttpResponse(json.dumps(out))
 

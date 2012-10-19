@@ -1,5 +1,5 @@
 from django import template
-from ..models import CharacterAttributeDefinition
+from ..models import CharacterAttributeDefinition, DataType
 
 register = template.Library()
 
@@ -11,5 +11,9 @@ def char_attr(context, attributeDefinition):
     attributeDefinition = CharacterAttributeDefinition.objects.get(gameSystem = character.gameSystem, name = attributeDefinition)
 
   value = character.getAttributeValueByDefinition(attributeDefinition)
-  return '<span id="attr_%d" class="char_attr">%s</span>' % (attributeDefinition.id, value)
+  out = ['<span', 'id="attr_%d"' % attributeDefinition.id, 'class="char_attr"']
+  if attributeDefinition.dataType.id == DataType.CONCEPT:
+    out.append('data-editor="select"')
+  out.append('>%s</span>' % value)
+  return ' '.join(out)
 

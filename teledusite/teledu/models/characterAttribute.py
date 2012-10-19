@@ -25,13 +25,6 @@ class CharacterAttribute(models.Model):
         self.definition, self.raw_value, self.definition.dataType.name, e))
     return result
 
-#  def asDict(self):
-#   return {
-#      'id': self.definition.id,
-#      'name': self.definition.name,
-#      'value': self.raw_value,
-#    }
-
   def serialize(self):
     return json.dumps(self.asDict())
 

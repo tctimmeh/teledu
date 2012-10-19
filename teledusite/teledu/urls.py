@@ -6,5 +6,6 @@ urlpatterns = patterns('',
   url(r'^character/(?P<charId>\d+?)(?P<json>\.json)?$', 'teledu.views.charSheet'),
   url(r'^character/(?P<charId>\d+?)/delete$', 'teledu.views.deleteCharacter'),
   url(r'^character/(?P<charId>\d+?)/attribute/(?P<attrId>\d+?)$', 'teledu.views.setCharacterAttribute'),
+  url(r'^character/(?P<charId>\d+?)/attribute/(?P<attrId>\d+?)/choices$', 'teledu.views.getCharacterAttributeChoices'),
 )
 

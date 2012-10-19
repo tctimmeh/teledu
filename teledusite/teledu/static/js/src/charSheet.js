@@ -27,11 +27,21 @@ function editValue(value, settings) {
   .fail(function() {alert("Updating attribute failed");})
   ;
 
-  return value;
+  return '...';
 }
 
 function createEditables() {
-  $('.char_attr').editable(editValue, {cssclass: "inline-edit"});
+  $('.char_attr').each(function() {
+    var element = $(this);
+    var id = rxID.exec(this.id)[1];
+    var editor = element.data('editor');
+    if (editor == 'select') {
+      element.editable(editValue, {type: 'select', loadurl: window.location + '/attribute/' + id + '/choices'})
+    }
+    else {
+      element.editable(editValue, {cssclass: "inline-edit"});
+    }
+  });
 }
 
 $(document).ready(function() {

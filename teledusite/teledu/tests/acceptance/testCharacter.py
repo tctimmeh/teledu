@@ -1,4 +1,5 @@
 import unittest
+from selenium.webdriver.support.select import Select
 from selenium.common.exceptions import NoSuchElementException
 from teledu.models import CharacterAttribute
 from teleduLiveTestCase import TeleduLiveTestCase, setUpModule
@@ -58,7 +59,7 @@ class TestCharacterSheet(TeleduLiveTestCase):
     self.editAttributeAndWaitForChange(self.charAttrDefn, expected)
     self.assertCharacterAttributeHasValue(self.charAttr, expected)
 
-  def testEdittingAttributeWithDependentsUpdatesDependentAttributes(self):
+  def testEditingAttributeWithDependentsUpdatesDependentAttributes(self):
     expected = self.uniqStr()
     self.editAttributeAndWaitForChange(self.charAttrDefn, expected, changeDefinition = self.dependentCharAttrDefn)
     self.assertCharacterAttributeHasValue(self.dependentCharAttr, expected)
@@ -68,4 +69,19 @@ class TestCharacterSheet(TeleduLiveTestCase):
     self.charAttrDefn.save()
     self.driver.refresh()
     self.assertRaises(NoSuchElementException, self.driver.find_element_by_id, 'attr_%d' % self.charAttrDefn.id)
+
+  def testChoosingNewValueForConceptAttributeUpdatesCharacterInDatabase(self):
+    conceptInstance2 = self.createConceptInstance()
+
+    element = self.driver.find_element_by_id('attr_%d' % self.conceptCharAttrDefn.id)
+    element.click()
+    select = Select(element.find_element_by_tag_name('select'))
+    self.assertEqual(select.first_selected_option.text, self.conceptInstance.name)
+
+    select.select_by_visible_text(conceptInstance2.name)
+    WebDriverWait(self.driver, 5).until(lambda driver: self.elementHasText(element, conceptInstance2.name))
+
+    expected = conceptInstance2.name
+    actual = CharacterAttribute.objects.get(character = self.character, definition = self.conceptCharAttrDefn).value
+    self.assertEqual(actual, expected)
 
