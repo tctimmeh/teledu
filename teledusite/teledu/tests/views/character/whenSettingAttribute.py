@@ -25,11 +25,11 @@ class WhenSettingAttribute(TeleduTestCase):
     self.assertEqual(self.response.status_code, 200)
 
   def testThatNotFoundCodeIsReturnedForInvalidCharacterId(self):
-    self.response = self._doRequest(characterId = random.randint(999999, 99999999))
+    self.response = self._doRequest(characterId = self.uniqInt())
     self.assertEqual(self.response.status_code, 404)
 
   def testThatNotFoundCodeIsReturnedForInvalidAttributeId(self):
-    self.response = self._doRequest(attributeId = random.randint(999999, 99999999))
+    self.response = self._doRequest(attributeId = self.uniqInt())
     self.assertEqual(self.response.status_code, 404)
 
   def testThatAttributeGetsNewValue(self):

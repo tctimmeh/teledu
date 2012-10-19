@@ -1,13 +1,18 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponseNotFound
 from teledu.models import Character, CharacterAttribute
 from teledu.tests.teleduTestCase import TeleduTestCase
 
 class WhenDeletingCharacter(TeleduTestCase):
+  def setUp(self):
+    super(WhenDeletingCharacter, self).setUp()
+    self.deleteUrl = '/character/%d/delete'
+
   def get(self):
-    return self.client.get('/character/%d/delete' % self.character.id)
+    return self.client.get(self.deleteUrl % self.character.id)
 
   def post(self, data = {}):
-    return self.client.post('/character/%d/delete' % self.character.id, data, follow = True)
+    return self.client.post(self.deleteUrl % self.character.id, data, follow = True)
 
   def delete(self):
     return self.client.delete('/character/%d' % self.character.id, follow = True)
@@ -45,4 +50,12 @@ class WhenDeletingCharacter(TeleduTestCase):
   def testThatUsingDeleteMethodOnCharacterDeletesCharacter(self):
     self.delete()
     self.assertRaises(ObjectDoesNotExist, Character.objects.get, pk = self.character.id)
+
+  def testThatGetWithBadIdReturns404(self):
+    response = self.client.get(self.deleteUrl % self.uniqInt())
+    self.assertEqual(response.status_code, 404)
+
+  def testThatPostWithBadIdReturns404(self):
+    response = self.client.post(self.deleteUrl % self.uniqInt())
+    self.assertEqual(response.status_code, 404)
 
