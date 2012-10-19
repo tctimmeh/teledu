@@ -79,9 +79,12 @@ class TestHelpers(object):
       conceptAttribute.save()
     return instance
 
-  def assertCharacterAttributeHasValue(self, attr, expected):
-    actual = CharacterAttribute.objects.get(pk = attr.id).raw_value
-    self.assertEqual(actual, expected)
+  def assertCharacterAttributeHasRawValue(self, attr, expected):
+    if isinstance(attr, CharacterAttribute):
+      actual = CharacterAttribute.objects.get(pk = attr.id).raw_value
+    else:
+      actual = CharacterAttribute.objects.get(definition = attr, character = self.character).raw_value
+    self.assertEqual(actual, unicode(expected))
 
   def getCharacterAttributeForDefinition(self, definition, character = None):
     if character is None:
@@ -92,4 +95,11 @@ class TestHelpers(object):
   def getCharacterAttributeValueByDefinition(self, definition, character = None):
     attribute = self.getCharacterAttributeForDefinition(definition, character)
     return attribute.value
+
+  def getCharacterAttributeRawValueByDefinition(self, definition, character = None):
+    attribute = self.getCharacterAttributeForDefinition(definition, character)
+    return attribute.raw_value
+
+  def assertCharacterHasAttributeForDefinition(self, definition):
+    CharacterAttribute.objects.get(character = self.character, definition = definition)
 

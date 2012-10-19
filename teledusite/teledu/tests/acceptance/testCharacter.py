@@ -57,12 +57,12 @@ class TestCharacterSheet(TeleduLiveTestCase):
   def testEditingTextAttributeChangesCharacterInDatabase(self):
     expected = self.uniqStr()
     self.editAttributeAndWaitForChange(self.charAttrDefn, expected)
-    self.assertCharacterAttributeHasValue(self.charAttr, expected)
+    self.assertCharacterAttributeHasRawValue(self.charAttr, expected)
 
   def testEditingAttributeWithDependentsUpdatesDependentAttributes(self):
     expected = self.uniqStr()
     self.editAttributeAndWaitForChange(self.charAttrDefn, expected, changeDefinition = self.dependentCharAttrDefn)
-    self.assertCharacterAttributeHasValue(self.dependentCharAttr, expected)
+    self.assertCharacterAttributeHasRawValue(self.dependentCharAttr, expected)
 
   def testAttributeMarkedAsHiddenDoesNotAppearOnCharacterSheet(self):
     self.charAttrDefn.display = False

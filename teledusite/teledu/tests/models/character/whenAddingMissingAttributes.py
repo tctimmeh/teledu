@@ -1,32 +1,29 @@
 from django.core.exceptions import ObjectDoesNotExist
-from teledu.models import CharacterAttribute, CharacterAttributeDefinition, ConceptInstance
+from teledu.models import CharacterAttribute, ConceptInstance
 from teledu.tests.teleduTestCase import TeleduTestCase
 
 class WhenAddingMissingAttributes(TeleduTestCase):
   def testAllMissingAttributesAreAdded(self):
-    self.createAttrDefinition(name="newDefinition")
+    definition = self.createAttrDefinition()
+    definition2 = self.createAttrDefinition()
     self.character.addMissingCharacterAttributeDefinitions()
-    characterAttributeDefinitions = CharacterAttributeDefinition.objects.filter(gameSystem = self.gameSystem)
-    for attributeDefinition in characterAttributeDefinitions:
-      CharacterAttribute.objects.get(character = self.character, definition = attributeDefinition)
+    self.assertCharacterHasAttributeForDefinition(definition)
+    self.assertCharacterHasAttributeForDefinition(definition2)
 
   def testCorrectDefaultValueIsAssignedIfNotConcept(self):
-    newAttributeDefinition = self.createAttrDefinition(name="newDefinition")
+    newAttributeDefinition = self.createAttrDefinition()
     self.character.addMissingCharacterAttributeDefinitions()
     expectedValue = newAttributeDefinition.default
-    attribute = CharacterAttribute.objects.get(character = self.character, definition = newAttributeDefinition)
-    self.assertEqual(expectedValue, attribute.raw_value)
+    self.assertCharacterAttributeHasRawValue(newAttributeDefinition, expectedValue)
 
-  def testCorrectDefaultValueIsAssignedIfConcept(self):
-    newAttributeDefinition = self.createAttrDefinition(name="newDefinition", concept=self.concept)
+  def testAttributeValueIsConceptInstanceIdIfDefaultNamesValidConceptInstance(self):
+    instance = self.createConceptInstance(concept = self.concept)
+    newAttributeDefinition = self.createAttrDefinition(type = 'concept', concept=self.concept, default = instance.name)
     self.character.addMissingCharacterAttributeDefinitions()
-    try:
-      expectedValue = ConceptInstance.objects.get(name = self.concept.name, concept = self.concept).id
-    except ObjectDoesNotExist, e:
-      expectedValue = ''
-    attribute = CharacterAttribute.objects.get(character = self.character, definition = newAttributeDefinition)
-    self.assertEqual(expectedValue, attribute.raw_value)
+    self.assertCharacterAttributeHasRawValue(newAttributeDefinition, instance.id)
 
-
-
+  def testAttributeValueIsConceptInstanceIdIfDefaultNamesInvalidConceptInstance(self):
+    newAttributeDefinition = self.createAttrDefinition(type = 'concept', concept=self.concept, default = self.uniqStr())
+    self.character.addMissingCharacterAttributeDefinitions()
+    self.assertCharacterAttributeHasRawValue(newAttributeDefinition, '')
 
