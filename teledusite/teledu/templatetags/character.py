@@ -11,5 +11,8 @@ def char_attr(context, attributeDefinition):
     attributeDefinition = CharacterAttributeDefinition.objects.get(gameSystem = character.gameSystem, name = attributeDefinition)
 
   value = character.getAttributeValueByDefinition(attributeDefinition)
-  return '<span id="attr_%d" class="char_attr">%s</span>' % (attributeDefinition.id, value)
+  out = ['<span id="attr_%d" class="char_attr"' % attributeDefinition.id]
+  out.append('data-editor="simple"')
+  out.append('>%s</span>' % value)
+  return ' '.join(out)
 

@@ -9,8 +9,15 @@ class WhenEmbeddingCharacterAttribute(TeleduTestCase):
     self.context = Context()
     self.context['character'] = self.character
 
-  def assertCorrectAttributeElement(self, elementText):
-    self.assertEqual(elementText, '<span id="attr_%d" class="char_attr">%s</span>' % (self.charAttrDefn.id, self.charAttrValue))
+  def assertCorrectAttributeElement(self, elementText, definition = None):
+    if definition is None:
+      definition = self.charAttrDefn
+
+    expected = '<span id="attr_%d" class="char_attr"' % definition.id
+    expected += ' data-editor="simple"'
+    expected += ' >%s</span>' % self.getCharacterAttributeValueByDefinition(definition)
+
+    self.assertEqual(elementText, expected)
 
   def testThatAttributeElementIsReturnedUsingAttributeReference(self):
     actual = char_attr(self.context, self.charAttrDefn)
@@ -31,4 +38,5 @@ class WhenEmbeddingCharacterAttribute(TeleduTestCase):
     actual = char_attr(self.context, self.charAttrDefn.name)
     self.assertCorrectAttributeElement(actual)
 
-
+#  def testThatDataInputAttributeIsSelectForConceptAttributes(self):
+#    self.charAttrDefn.dataType = 'c'
