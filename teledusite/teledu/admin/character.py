@@ -27,7 +27,7 @@ class CharacterAdmin(admin.ModelAdmin):
 
   def applyCurrentCharacterAttributesToAllCharacters(self, request, querySet):
     for character in querySet:
-      character.addMissingCharacterAttributeDefinitions();
+      character.addMissingCharacterAttributeDefinitions()
     self.message_user(request, "You successfully applied all current rules to %s characters" % len(querySet))
   applyCurrentCharacterAttributesToAllCharacters.short_description = "Apply all current character attributes to selected characters"
 
