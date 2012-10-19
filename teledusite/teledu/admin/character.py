@@ -17,13 +17,19 @@ class CharacterAttributeInline(admin.StackedInline):
 
 class CharacterAdmin(admin.ModelAdmin):
   inlines = [CharacterAttributeInline,]
-  actions = ['recalculateCharacters']
+  actions = ['recalculateCharacters', "applyCurrentCharacterAttributesToAllCharacters"]
 
   def recalculateCharacters(admin, request, querySet):
     for character in querySet:
       character.recalculateAllAttributes()
     admin.message_user(request, "%s successfully recalculated" % len(querySet))
   recalculateCharacters.short_description = 'Recalculate attributes for selected characters'
+
+  def applyCurrentCharacterAttributesToAllCharacters(self, request, querySet):
+    for character in querySet:
+      character.addMissingCharacterAttributeDefinitions();
+    self.message_user(request, "You successfully applied all current rules to %s characters" % len(querySet))
+  applyCurrentCharacterAttributesToAllCharacters.short_description = "Apply all current character attributes to selected characters"
 
 admin.site.register(Character, CharacterAdmin)
 

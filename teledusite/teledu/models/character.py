@@ -84,5 +84,31 @@ class Character(models.Model):
     attribute.save()
     return attribute.raw_value
 
+  def addMissingCharacterAttributeDefinitions(self):
+    attributeDefinitions = self._retreiveAllEligibleCharacterAttributeDefinitionsForThisCharacter()
+    for attributeDefinition in attributeDefinitions:
+      try:
+        self._retreiveCharacterAttributeForCharacterAttributeDefinition(attributeDefinition)
+      except ObjectDoesNotExist, e:
+        self._createCharacterAttributeFromCharacterAttributeDefinition(attributeDefinition)
+        self.save()
+
+  def _retreiveAllEligibleCharacterAttributeDefinitionsForThisCharacter(self):
+    return CharacterAttributeDefinition.objects.filter(gameSystem = self.gameSystem)
+
+  def _retreiveCharacterAttributeForCharacterAttributeDefinition(self, attributeDefinition):
+    return CharacterAttribute.objects.get(character = self, definition = attributeDefinition)
+
+  def _createCharacterAttributeFromCharacterAttributeDefinition(self, attributeDefinition):
+    from teledu.models import ConceptInstance
+    if attributeDefinition.dataType.isConcept():
+      try:
+        initialValue = ConceptInstance.objects.get(name = attributeDefinition.default, concept = attributeDefinition.concept).id
+      except ObjectDoesNotExist, e:
+        initialValue = ''
+    else:
+      initialValue = attributeDefinition.default
+    CharacterAttribute.objects.create(character = self, definition = attributeDefinition, raw_value = initialValue)
+
 from characterAttribute import CharacterAttribute
 
