@@ -11,6 +11,7 @@ class ConceptInstance(models.Model):
 
   class Meta:
     app_label = 'teledu'
+    unique_together = (('concept', 'name'))
 
   def __unicode__(self):
     return '%s - %s - %s' % (self.concept.gameSystem.name, self.concept.name, self.name)
