@@ -23,36 +23,29 @@ class Character(models.Model):
 
   @classmethod
   def create(cls, gameSystem, name):
-    from teledu.models import ConceptInstance
-
     newCharacter = Character.objects.create(name = name)
-    for attributeDefinition in CharacterAttributeDefinition.objects.filter(gameSystem = gameSystem):
-      if attributeDefinition.dataType.isConcept():
-        try:
-          initialValue = ConceptInstance.objects.get(name = attributeDefinition.default, concept = attributeDefinition.concept).id
-        except ObjectDoesNotExist, e:
-          initialValue = ''
-      else:
-        initialValue = attributeDefinition.default
-
-      CharacterAttribute.objects.create(character = newCharacter, definition = attributeDefinition, raw_value = initialValue)
+    newCharacter.addMissingCharacterAttributeDefinitions(gameSystem = gameSystem)
     return newCharacter
 
-  def getAttributeValueByName(self, attributeName):
-    return CharacterAttribute.objects.get(character = self, definition__name = attributeName).value
+  def getAttributeValue(self, attribute):
+    if isinstance(attribute, str) or (isinstance(attribute, unicode)):
+      attribute = self.getAttributeByName(attribute)
+    elif isinstance(attribute, int) or isinstance(attribute, CharacterAttributeDefinition):
+      attribute = self.getAttributeByDefinition(attribute)
 
-  def getAttributeValueByDefinition(self, attributeDefinition):
-    if isinstance(attributeDefinition, int):
-      attributeDefinition = CharacterAttributeDefinition.objects.get(pk = attributeDefinition)
-
-    attribute = CharacterAttribute.objects.get(character = self, definition = attributeDefinition)
     return attribute.value
+
+  def getAttributeByDefinition(self, attributeDefinition):
+    return CharacterAttribute.objects.get(character = self, definition = attributeDefinition)
+
+  def getAttributeByName(self, name):
+    return CharacterAttribute.objects.get(character = self, definition__name = name)
 
   def setAttributeValue(self, attrDefinition, value):
     attrGraph = AttributeDependentGraph(attrDefinition)
 
     self._setAttr(attrDefinition, value)
-    changedAttributes = {attrDefinition.id: self.getAttributeValueByDefinition(attrDefinition)}
+    changedAttributes = {attrDefinition.id: self.getAttributeValue(attrDefinition)}
 
     for dep in attrGraph.items():
       newValue = self._calculateAttributeValue(dep)
@@ -66,40 +59,39 @@ class Character(models.Model):
       self._calculateAttributeValue(dep)
 
   def _setAttr(self, attrDef, value):
-    attribute = CharacterAttribute.objects.get(character = self, definition = attrDef)
+    attribute = self.getAttributeByDefinition(attrDef)
     attribute.raw_value = value
     attribute.save()
 
   def _calculateAttributeValue(self, attrDefn):
-    attribute = CharacterAttribute.objects.get(character = self, definition = attrDefn)
+    attribute = self.getAttributeByDefinition(attrDefn)
     attribute.calculateNewValue()
     attribute.save()
     return attribute.value
 
-  def addMissingCharacterAttributeDefinitions(self):
-    attributeDefinitions = self._retreiveAllEligibleCharacterAttributeDefinitionsForThisCharacter()
-    for attributeDefinition in attributeDefinitions:
+  def addMissingCharacterAttributeDefinitions(self, gameSystem = None):
+    if gameSystem is None:
+      gameSystem = self.gameSystem
+
+    for attributeDefinition in gameSystem.characterAttributeDefinitions.all():
       try:
-        self._retreiveCharacterAttributeForCharacterAttributeDefinition(attributeDefinition)
+        self.getAttributeByDefinition(attributeDefinition)
       except ObjectDoesNotExist, e:
-        self._createCharacterAttributeFromCharacterAttributeDefinition(attributeDefinition)
-        self.save()
+        self._createCharacterAttributeFromDefinition(attributeDefinition)
 
-  def _retreiveAllEligibleCharacterAttributeDefinitionsForThisCharacter(self):
-    return CharacterAttributeDefinition.objects.filter(gameSystem = self.gameSystem)
-
-  def _retreiveCharacterAttributeForCharacterAttributeDefinition(self, attributeDefinition):
-    return CharacterAttribute.objects.get(character = self, definition = attributeDefinition)
-
-  def _createCharacterAttributeFromCharacterAttributeDefinition(self, attributeDefinition):
+  def _getInitialValueForForAttributeDefinition(self, definition):
     from teledu.models import ConceptInstance
-    if attributeDefinition.dataType.isConcept():
+
+    if definition.dataType.isConcept():
       try:
-        initialValue = ConceptInstance.objects.get(name = attributeDefinition.default, concept = attributeDefinition.concept).id
+        return ConceptInstance.objects.get(name = definition.default, concept = definition.concept).id
       except ObjectDoesNotExist, e:
-        initialValue = ''
+        return ''
     else:
-      initialValue = attributeDefinition.default
+      return definition.default
+
+  def _createCharacterAttributeFromDefinition(self, attributeDefinition):
+    initialValue = self._getInitialValueForForAttributeDefinition(attributeDefinition)
     CharacterAttribute.objects.create(character = self, definition = attributeDefinition, raw_value = initialValue)
 
 from characterAttribute import CharacterAttribute

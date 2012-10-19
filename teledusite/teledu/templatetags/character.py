@@ -10,7 +10,7 @@ def char_attr(context, attributeDefinition):
   if isinstance(attributeDefinition, str) or isinstance(attributeDefinition, unicode):
     attributeDefinition = CharacterAttributeDefinition.objects.get(gameSystem = character.gameSystem, name = attributeDefinition)
 
-  value = character.getAttributeValueByDefinition(attributeDefinition)
+  value = character.getAttributeValue(attributeDefinition)
   out = ['<span', 'id="attr_%d"' % attributeDefinition.id, 'class="char_attr"']
   if attributeDefinition.dataType.id == DataType.CONCEPT:
     out.append('data-editor="select"')

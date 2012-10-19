@@ -8,7 +8,7 @@ class AttributeResolver(object):
 
     parts = expression.split('.')
     if len(parts) < 2:
-      return self.character.getAttributeValueByName(expression)
+      return self.character.getAttributeValue(expression)
 
     definition = CharacterAttributeDefinition.objects.get(gameSystem = self.character.gameSystem, name = parts[0])
     attribute = CharacterAttribute.objects.get(definition = definition, character = self.character)

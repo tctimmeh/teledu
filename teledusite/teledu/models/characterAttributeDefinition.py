@@ -4,7 +4,7 @@ from dataType import DataType
 from gameSystemConcept import GameSystemConcept
 
 class CharacterAttributeDefinition(models.Model):
-  gameSystem = models.ForeignKey(GameSystem, verbose_name = 'Game System')
+  gameSystem = models.ForeignKey(GameSystem, verbose_name = 'Game System', related_name = 'characterAttributeDefinitions')
   name = models.CharField(max_length = 30)
   dataType = models.ForeignKey(DataType, verbose_name = 'Data Type', default = 1)
   concept = models.ForeignKey(GameSystemConcept, null = True, blank = True)
