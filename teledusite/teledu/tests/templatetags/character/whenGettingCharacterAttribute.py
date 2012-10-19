@@ -9,15 +9,16 @@ class WhenEmbeddingCharacterAttribute(TeleduTestCase):
     self.context = Context()
     self.context['character'] = self.character
 
-  def assertCorrectAttributeElement(self, elementText, definition = None):
+  def assertCorrectAttributeElement(self, elementText, expectedAttributes = {}, definition = None):
     if definition is None:
       definition = self.charAttrDefn
 
-    expected = '<span id="attr_%d" class="char_attr"' % definition.id
-    expected += ' data-editor="simple"'
-    expected += ' >%s</span>' % self.getCharacterAttributeValueByDefinition(definition)
-
-    self.assertEqual(elementText, expected)
+    self.assertTrue(elementText.startswith('<span'))
+    self.assertTrue(elementText.endswith('>%s</span>' % self.getCharacterAttributeValueByDefinition(definition)))
+    self.assertIn('class="char_attr"', elementText)
+    self.assertIn('id="attr_%d"' % definition.id, elementText)
+    for attribute, value in expectedAttributes.items():
+      self.assertIn('%s="%s"' % (attribute, value), elementText)
 
   def testThatAttributeElementIsReturnedUsingAttributeReference(self):
     actual = char_attr(self.context, self.charAttrDefn)
@@ -38,5 +39,10 @@ class WhenEmbeddingCharacterAttribute(TeleduTestCase):
     actual = char_attr(self.context, self.charAttrDefn.name)
     self.assertCorrectAttributeElement(actual)
 
-#  def testThatDataInputAttributeIsSelectForConceptAttributes(self):
-#    self.charAttrDefn.dataType = 'c'
+  def testThatDataInputAttributeIsSelectForConceptAttributes(self):
+    definition = self.addAttrDefnToCharacter(type = 'concept')
+    actual = char_attr(self.context, definition.name)
+    self.assertCorrectAttributeElement(actual, expectedAttributes = {
+      'data-editor': 'select'
+    }, definition = definition)
+
