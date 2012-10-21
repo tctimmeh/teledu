@@ -15,7 +15,7 @@ class TestHelpers(object):
     return GameSystem.objects.create(name = self.uniqStr())
 
   def createAttrDefinition(self, gameSystem = None, calcFunction = None, name = None, type = 'text', default = '',
-                           concept = None, dependencies = []):
+                           concept = None, dependencies = [], list = False):
     if gameSystem is None:
       gameSystem = self.gameSystem
     if name is None:
@@ -24,7 +24,7 @@ class TestHelpers(object):
     dataType = DataType.objects.get(name = type)
 
     definition = CharacterAttributeDefinition.objects.create(pk = self.uniqInt(), gameSystem = gameSystem, name = name,
-      calcFunction = calcFunction, dataType = dataType, default = default, concept = concept)
+      calcFunction = calcFunction, dataType = dataType, default = default, concept = concept, list = list)
     for dependency in dependencies:
       CharacterAttributeDependency.objects.create(attribute = definition, dependency = dependency)
     return definition

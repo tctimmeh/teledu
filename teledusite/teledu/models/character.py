@@ -27,19 +27,28 @@ class Character(models.Model):
     newCharacter.addMissingCharacterAttributeDefinitions(gameSystem = gameSystem)
     return newCharacter
 
-  def getAttributeValue(self, attributes):
-    if isinstance(attributes, str) or (isinstance(attributes, unicode)):
-      attributes = self.getAttributesByName(attributes)
-    elif isinstance(attributes, int) or isinstance(attributes, CharacterAttributeDefinition):
-      attributes = self.getAttributesByDefinition(attributes)
+  def getAttributeValue(self, attribute):
+    definition = self._getAttributeDefinition(attribute)
+    attributes = self.getAttributesByDefinition(definition)
 
-    return attributes[0].value
+    if not definition.list:
+      out = attributes[0].value
+    else:
+      out = []
+      for attribute in attributes:
+        out.append(attribute.value)
+    return out
+
+  def _getAttributeDefinition(self, attribute):
+    if isinstance(attribute, CharacterAttributeDefinition):
+      return attribute
+    elif isinstance(attribute, int):
+      return CharacterAttributeDefinition.objects.get(pk = attribute)
+    elif isinstance(attribute, str) or (isinstance(attribute, unicode)):
+      return self.attributes.get(name = attribute)
 
   def getAttributesByDefinition(self, attributeDefinition):
     return CharacterAttribute.objects.filter(character = self, definition = attributeDefinition)
-
-  def getAttributesByName(self, name):
-    return CharacterAttribute.objects.filter(character = self, definition__name = name)
 
   def setAttributeValue(self, attrDefinition, value):
     attrGraph = AttributeDependentGraph(attrDefinition)

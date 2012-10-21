@@ -89,7 +89,7 @@ class TestCharacterSheet(TeleduLiveTestCase):
   def testListAttributesDisplayedAsUnorderedList(self):
     self.charAttrDefn.list = True
     self.charAttrDefn.save()
-    attr2 = self.createAttrForCharacter(self.charAttrDefn)
+    attr2 = self.createAttrForCharacter(self.charAttrDefn, initialValue = self.uniqStr())
     self.driver.refresh()
 
     expected = [self.charAttr.value, attr2.value]
