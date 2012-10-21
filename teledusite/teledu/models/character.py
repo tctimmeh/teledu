@@ -27,19 +27,19 @@ class Character(models.Model):
     newCharacter.addMissingCharacterAttributeDefinitions(gameSystem = gameSystem)
     return newCharacter
 
-  def getAttributeValue(self, attribute):
-    if isinstance(attribute, str) or (isinstance(attribute, unicode)):
-      attribute = self.getAttributeByName(attribute)
-    elif isinstance(attribute, int) or isinstance(attribute, CharacterAttributeDefinition):
-      attribute = self.getAttributeByDefinition(attribute)
+  def getAttributeValue(self, attributes):
+    if isinstance(attributes, str) or (isinstance(attributes, unicode)):
+      attributes = self.getAttributesByName(attributes)
+    elif isinstance(attributes, int) or isinstance(attributes, CharacterAttributeDefinition):
+      attributes = self.getAttributesByDefinition(attributes)
 
-    return attribute.value
+    return attributes[0].value
 
-  def getAttributeByDefinition(self, attributeDefinition):
-    return CharacterAttribute.objects.get(character = self, definition = attributeDefinition)
+  def getAttributesByDefinition(self, attributeDefinition):
+    return CharacterAttribute.objects.filter(character = self, definition = attributeDefinition)
 
-  def getAttributeByName(self, name):
-    return CharacterAttribute.objects.get(character = self, definition__name = name)
+  def getAttributesByName(self, name):
+    return CharacterAttribute.objects.filter(character = self, definition__name = name)
 
   def setAttributeValue(self, attrDefinition, value):
     attrGraph = AttributeDependentGraph(attrDefinition)
@@ -59,12 +59,12 @@ class Character(models.Model):
       self._calculateAttributeValue(dep)
 
   def _setAttr(self, attrDef, value):
-    attribute = self.getAttributeByDefinition(attrDef)
+    attribute = self.getAttributesByDefinition(attrDef)[0]
     attribute.raw_value = value
     attribute.save()
 
   def _calculateAttributeValue(self, attrDefn):
-    attribute = self.getAttributeByDefinition(attrDefn)
+    attribute = self.getAttributesByDefinition(attrDefn)[0]
     attribute.calculateNewValue()
     attribute.save()
     return attribute.value
@@ -74,9 +74,8 @@ class Character(models.Model):
       gameSystem = self.gameSystem
 
     for attributeDefinition in gameSystem.characterAttributeDefinitions.all():
-      try:
-        self.getAttributeByDefinition(attributeDefinition)
-      except ObjectDoesNotExist, e:
+      attributes = self.getAttributesByDefinition(attributeDefinition)
+      if not attributes:
         self._createCharacterAttributeFromDefinition(attributeDefinition)
 
   def _getInitialValueForForAttributeDefinition(self, definition):

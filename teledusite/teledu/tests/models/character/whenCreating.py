@@ -23,14 +23,14 @@ class WhenCreatingCharacter(TeleduTestCase):
     self.assertGreater(len(actual), 0)
 
   def testThatAttributesGetDefaultValues(self):
-    actual = CharacterAttribute.objects.get(character = self.character, definition = self.charAttrDefn)
-    self.assertEqual(actual.raw_value, self.charAttrDefn.default)
+    actual = self.getCharacterAttributeRawValueByDefinition(self.charAttrDefn)
+    self.assertEqual(actual, self.charAttrDefn.default)
 
   def testThatConceptTypeAttributesGetIdOfNamedConceptInstance(self):
-    actual = CharacterAttribute.objects.get(character = self.character, definition = self.conceptAttrDefn)
-    self.assertEqual(int(actual.raw_value), self.conceptInstance.id)
+    actual = self.getCharacterAttributeRawValueByDefinition(self.conceptAttrDefn)
+    self.assertEqual(int(actual), self.conceptInstance.id)
 
   def testThatConceptTypeAttributesGetEmptyValueForDefinitionsWithNoDefault(self):
-    actual = CharacterAttribute.objects.get(character = self.character, definition = self.noDefaultDefn)
-    self.assertEqual(actual.raw_value, '')
+    actual = self.getCharacterAttributeRawValueByDefinition(self.noDefaultDefn)
+    self.assertEqual(actual, '')
 
