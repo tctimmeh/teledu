@@ -85,3 +85,22 @@ class TestCharacterSheet(TeleduLiveTestCase):
     actual = CharacterAttribute.objects.get(character = self.character, definition = self.conceptCharAttrDefn).value
     self.assertEqual(actual, expected)
 
+  @unittest.expectedFailure
+  def testListAttributesDisplayedAsUnorderedList(self):
+    self.charAttrDefn.list = True
+    self.charAttrDefn.save()
+    attr2 = self.createAttrForCharacter(self.charAttrDefn)
+    self.driver.refresh()
+
+    expected = [self.charAttr.value, attr2.value]
+    expected.sort()
+
+    element = self.driver.find_element_by_id('attr_%d' % self.charAttrDefn.id)
+    self.assertTrue(element.tag_name, 'ul')
+
+    items = element.find_elements_by_tag_name('li')
+    actual = map(lambda e: e.text, items)
+    actual.sort()
+
+    self.assertEqual(actual, expected)
+
