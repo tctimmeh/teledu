@@ -85,7 +85,6 @@ class TestCharacterSheet(TeleduLiveTestCase):
     actual = CharacterAttribute.objects.get(character = self.character, definition = self.conceptCharAttrDefn).value
     self.assertEqual(actual, expected)
 
-  @unittest.expectedFailure
   def testListAttributesDisplayedAsUnorderedList(self):
     self.charAttrDefn.list = True
     self.charAttrDefn.save()

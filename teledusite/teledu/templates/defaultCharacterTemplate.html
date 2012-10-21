@@ -13,7 +13,7 @@
       </tr>
     </thead>
     <tbody>
-      {% for attribute in character.attributes.all %}
+      {% for attribute in character.attributes.distinct %}
         {% if attribute.display %}
           <tr>
             <td>{{ attribute.name }}</td>

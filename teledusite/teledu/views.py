@@ -27,9 +27,6 @@ def charSheet(request, charId, json):
     character.delete()
     return HttpResponse()
 
-  if json:
-    return HttpResponse(character.serialize())
-
   sheetTemplates = CharacterSheet.objects.filter(gameSystem = character.gameSystem)
   if sheetTemplates:
     template = compileCustomSheetForCharacter(sheetTemplates[0].template)
