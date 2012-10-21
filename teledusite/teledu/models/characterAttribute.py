@@ -11,7 +11,6 @@ class CharacterAttribute(models.Model):
 
   class Meta:
     app_label = 'teledu'
-    unique_together = (('character', 'definition'))
 
   def __unicode__(self):
     return '%s [%s] = [%s]' % (self.character.name, self.definition.name, self.raw_value)
