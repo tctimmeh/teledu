@@ -10,10 +10,10 @@ class ConceptAttributeDefinition(AttributeDefinition):
     unique_together = (('concept', 'name'))
 
   def __unicode__(self):
-    return '%s - %s' % (self.concept.name, self.name)
+    return '%s - %s' % (self.valueConcept.name, self.name)
 
   def conceptName(self):
-    return self.concept.name
+    return self.valueConcept.name
 
   def gameSystem(self):
-    return self.concept.gameSystem
+    return self.valueConcept.gameSystem

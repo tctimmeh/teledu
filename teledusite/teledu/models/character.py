@@ -89,10 +89,12 @@ class Character(models.Model):
 
   def _getInitialValueForForAttributeDefinition(self, definition):
     from teledu.models import ConceptInstance
+    if not definition.default:
+      return definition.default
 
     if definition.dataType.isConcept():
       try:
-        return ConceptInstance.objects.get(name = definition.default, concept = definition.concept).id
+        return ConceptInstance.objects.get(name = definition.default, concept = definition.valueConcept).id
       except ObjectDoesNotExist, e:
         return ''
     else:

@@ -83,7 +83,7 @@ def getCharacterAttributeChoices(request, charId, attrId):
   if definition.dataType.id != DataType.CONCEPT:
     return HttpResponse('')
 
-  conceptInstances = ConceptInstance.objects.filter(concept = definition.concept)
+  conceptInstances = ConceptInstance.objects.filter(concept = definition.valueConcept)
   out = {}
   for instance in conceptInstances:
     out[instance.id] = instance.name

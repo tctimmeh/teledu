@@ -24,7 +24,7 @@ class TestHelpers(object):
     dataType = DataType.objects.get(name = type)
 
     definition = CharacterAttributeDefinition.objects.create(pk = self.uniqInt(), gameSystem = gameSystem, name = name,
-      calcFunction = calcFunction, dataType = dataType, default = default, concept = concept, list = list)
+      calcFunction = calcFunction, dataType = dataType, default = default, valueConcept = concept, list = list)
     for dependency in dependencies:
       CharacterAttributeDependency.objects.create(attribute = definition, dependency = dependency)
     return definition

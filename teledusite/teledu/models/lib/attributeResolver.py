@@ -13,7 +13,7 @@ class AttributeResolver(object):
     definition = CharacterAttributeDefinition.objects.get(gameSystem = self.character.gameSystem, name = parts[0])
     attribute = CharacterAttribute.objects.get(definition = definition, character = self.character)
     conceptInstance = ConceptInstance.objects.get(pk = attribute.raw_value)
-    conceptAttrDefn = ConceptAttributeDefinition.objects.get(concept = definition.concept, name = parts[1])
+    conceptAttrDefn = ConceptAttributeDefinition.objects.get(concept = definition.valueConcept, name = parts[1])
     conceptAttribute = ConceptInstanceAttribute.objects.get(definition = conceptAttrDefn, instance = conceptInstance)
 
     return conceptAttribute.raw_value
