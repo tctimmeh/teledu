@@ -1,11 +1,9 @@
 from django.db import models
 from gameSystemConcept import  GameSystemConcept
-from dataType import DataType
+from teledu.models.attributeDefinition import AttributeDefinition
 
-class ConceptAttributeDefinition(models.Model):
+class ConceptAttributeDefinition(AttributeDefinition):
   concept = models.ForeignKey(GameSystemConcept, related_name = 'attributeDefinitions')
-  name = models.CharField(max_length = 30)
-  dataType = models.ForeignKey(DataType, default = 1, verbose_name = 'Data Type')
 
   class Meta:
     app_label = 'teledu'
