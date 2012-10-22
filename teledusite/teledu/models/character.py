@@ -45,7 +45,7 @@ class Character(models.Model):
     elif isinstance(attribute, int):
       return CharacterAttributeDefinition.objects.get(pk = attribute)
     elif isinstance(attribute, str) or (isinstance(attribute, unicode)):
-      return self.attributes.get(name = attribute)
+      return self.attributes.filter(name = attribute).distinct()[0]
 
   def getAttributesByDefinition(self, attributeDefinition):
     return CharacterAttribute.objects.filter(character = self, definition = attributeDefinition)

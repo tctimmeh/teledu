@@ -1,4 +1,3 @@
-from teledu.models import ConceptInstanceAttribute
 from teledu.tests.teleduTestCase import TeleduTestCase
 
 class WhenGettingConceptAttributes(TeleduTestCase):

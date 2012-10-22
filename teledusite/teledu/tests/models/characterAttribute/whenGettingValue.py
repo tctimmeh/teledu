@@ -1,5 +1,4 @@
 import random
-from teledu.models import CharacterAttribute
 from teledu.tests.teleduTestCase import TeleduTestCase
 
 class WhenGettingValue(TeleduTestCase):

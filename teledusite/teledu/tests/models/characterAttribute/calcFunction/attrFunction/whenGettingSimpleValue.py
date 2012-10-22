@@ -29,3 +29,14 @@ class WhenGettingSimpleValue(TeleduTestCase):
     actual = self._calculateAttrFunctionForDefinition(sourceDefinition)
     self.assertEqual(actual, expected)
 
+  def testGettingListAttributeReturnsAllAttributesAsList(self):
+    definition = self.createAttrDefinition(list = True)
+    attr1 = self.createAttrForCharacter(definition, initialValue = self.uniqStr())
+    attr2 = self.createAttrForCharacter(definition, initialValue = self.uniqStr())
+    expected = [attr1.value, attr2.value]
+    expected.sort()
+
+    actual = self._calculateAttrFunctionForDefinition(definition)
+    actual.sort()
+    self.assertEqual(actual, expected)
+
