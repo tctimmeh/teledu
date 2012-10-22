@@ -1,6 +1,5 @@
 from django.db import models
 from gameSystem import GameSystem
-from dataType import DataType
 from gameSystemConcept import GameSystemConcept
 from teledu.models.attributeDefinition import AttributeDefinition
 

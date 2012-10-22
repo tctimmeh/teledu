@@ -1,31 +1,18 @@
-import json
 from django.db import models
 from character import Character
 from characterAttributeDefinition import CharacterAttributeDefinition
 from lib import AttributeResolver
+from teledu.models.attributeValue import AttributeValue
 
-class CharacterAttribute(models.Model):
+class CharacterAttribute(AttributeValue):
   character = models.ForeignKey(Character)
   definition = models.ForeignKey(CharacterAttributeDefinition)
-  raw_value = models.TextField(blank = True, default = '')
 
   class Meta:
     app_label = 'teledu'
 
   def __unicode__(self):
     return '%s [%s] = [%s]' % (self.character.name, self.definition.name, self.raw_value)
-
-  @property
-  def value(self):
-    try:
-      result = self.definition.dataType.translateValue(self.raw_value)
-    except ValueError, e:
-      raise ValueError('Failed to convert attribute [%s] with value [%s] to type [%s]: %s' % (
-        self.definition, self.raw_value, self.definition.dataType.name, e))
-    return result
-
-  def serialize(self):
-    return json.dumps(self.asDict())
 
   def calculateNewValue(self, **kwargs):
     if self.definition.calcFunction:
