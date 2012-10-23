@@ -25,9 +25,13 @@ class Character(models.Model):
     newCharacter.addMissingCharacterAttributeDefinitions(gameSystem = gameSystem)
     return newCharacter
 
-  def getAttributeValue(self, attribute):
-    definition = self._getAttributeDefinition(attribute)
+  def getAttributeValue(self, definition):
+    definition = self._getAttributeDefinition(definition)
     return definition.getAttributeValue(self)
+
+  def setAttributeValue(self, definition, value):
+    definition = self._getAttributeDefinition(definition)
+    return definition.setAttributeValue(self, value)
 
   def _getAttributeDefinition(self, attribute):
     if isinstance(attribute, CharacterAttributeDefinition):
@@ -37,43 +41,17 @@ class Character(models.Model):
     elif isinstance(attribute, str) or (isinstance(attribute, unicode)):
       return self.attributes.filter(name = attribute).distinct()[0]
 
-  def getAttributesByDefinition(self, attributeDefinition):
-    return CharacterAttribute.objects.filter(character = self, definition = attributeDefinition)
-
-  def setAttributeValue(self, attrDefinition, value):
-    attrGraph = AttributeDependentGraph(attrDefinition)
-
-    self._setAttr(attrDefinition, value)
-    changedAttributes = {attrDefinition.id: self.getAttributeValue(attrDefinition)}
-
-    for dep in attrGraph.items():
-      newValue = self._calculateAttributeValue(dep)
-      changedAttributes[dep.id] = newValue
-
-    return changedAttributes
-
   def recalculateAllAttributes(self):
     attrGraph = AttributeDependentGraph(self.attributes.all())
     for dep in attrGraph.items():
-      self._calculateAttributeValue(dep)
-
-  def _setAttr(self, attrDef, value):
-    attribute = self.getAttributesByDefinition(attrDef)[0]
-    attribute.raw_value = value
-    attribute.save()
-
-  def _calculateAttributeValue(self, attrDefn):
-    attribute = self.getAttributesByDefinition(attrDefn)[0]
-    attribute.calculateNewValue()
-    attribute.save()
-    return attribute.value
+      dep.calculateNewValueForInstance(self)
 
   def addMissingCharacterAttributeDefinitions(self, gameSystem = None):
     if gameSystem is None:
       gameSystem = self.gameSystem
 
     for attributeDefinition in gameSystem.characterAttributeDefinitions.all():
-      attributes = self.getAttributesByDefinition(attributeDefinition)
+      attributes = attributeDefinition.getAttributesForInstance(self)
       if not attributes:
         self._createCharacterAttributeFromDefinition(attributeDefinition)
 

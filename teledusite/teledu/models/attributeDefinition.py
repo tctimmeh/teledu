@@ -11,7 +11,7 @@ class AttributeDefinition(models.Model):
     abstract = True
 
   def getAttributeValue(self, instance):
-    attributes = self._getAttributes(instance)
+    attributes = self.getAttributesForInstance(instance)
 
     if not self.list:
       out = attributes[0].value
@@ -21,6 +21,11 @@ class AttributeDefinition(models.Model):
         out.append(attribute.value)
     return out
 
-  def _getAttributes(self, instance):
+  def setAttributeValue(self, instance, newValue):
+    attribute = self.getAttributesForInstance(instance)[0]
+    attribute.raw_value = newValue
+    attribute.save()
+
+  def getAttributesForInstance(self, instance):
     raise NotImplementedError()
 

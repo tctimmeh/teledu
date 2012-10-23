@@ -1,6 +1,7 @@
 from django.db import models
 from gameSystem import GameSystem
 from attributeDefinition import AttributeDefinition
+from teledu.models.lib import AttributeDependentGraph
 
 class CharacterAttributeDefinition(AttributeDefinition):
   gameSystem = models.ForeignKey(GameSystem, verbose_name = 'Game System', related_name = 'characterAttributeDefinitions')
@@ -15,7 +16,25 @@ class CharacterAttributeDefinition(AttributeDefinition):
   def __unicode__(self):
     return '%s - %s' % (self.gameSystem.name, self.name)
 
-  def _getAttributes(self, instance):
+  def getAttributesForInstance(self, instance):
     from characterAttribute import CharacterAttribute
     return CharacterAttribute.objects.filter(character = instance, definition = self)
+
+  def setAttributeValue(self, instance, newValue):
+    super(CharacterAttributeDefinition, self).setAttributeValue(instance, newValue)
+
+    attrGraph = AttributeDependentGraph(self)
+    changedAttributes = {self.id: self.getAttributeValue(instance)}
+
+    for dependentDefinition in attrGraph.items():
+      newValue = dependentDefinition.calculateNewValueForInstance(instance)
+      changedAttributes[dependentDefinition.id] = newValue
+
+    return changedAttributes
+
+  def calculateNewValueForInstance(self, instance):
+    attribute = self.getAttributesForInstance(instance)[0]
+    attribute.calculateNewValue()
+    attribute.save()
+    return attribute.value
 
