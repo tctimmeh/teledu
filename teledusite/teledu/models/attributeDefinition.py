@@ -10,3 +10,17 @@ class AttributeDefinition(models.Model):
   class Meta:
     abstract = True
 
+  def getAttributeValue(self, instance):
+    attributes = self._getAttributes(instance)
+
+    if not self.list:
+      out = attributes[0].value
+    else:
+      out = []
+      for attribute in attributes:
+        out.append(attribute.value)
+    return out
+
+  def _getAttributes(self, instance):
+    raise NotImplementedError()
+

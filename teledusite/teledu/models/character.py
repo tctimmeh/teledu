@@ -1,5 +1,3 @@
-import json
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from .lib import AttributeDependentGraph
 from characterAttributeDefinition import CharacterAttributeDefinition
@@ -29,15 +27,7 @@ class Character(models.Model):
 
   def getAttributeValue(self, attribute):
     definition = self._getAttributeDefinition(attribute)
-    attributes = self.getAttributesByDefinition(definition)
-
-    if not definition.list:
-      out = attributes[0].value
-    else:
-      out = []
-      for attribute in attributes:
-        out.append(attribute.value)
-    return out
+    return definition.getAttributeValue(self)
 
   def _getAttributeDefinition(self, attribute):
     if isinstance(attribute, CharacterAttributeDefinition):
@@ -95,7 +85,7 @@ class Character(models.Model):
     if definition.dataType.isConcept():
       try:
         return ConceptInstance.objects.get(name = definition.default, concept = definition.valueConcept).id
-      except ObjectDoesNotExist, e:
+      except ConceptInstance.DoesNotExist:
         return ''
     else:
       return definition.default

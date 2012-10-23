@@ -2,7 +2,7 @@ from django.db import models
 from character import Character
 from characterAttributeDefinition import CharacterAttributeDefinition
 from lib import AttributeResolver
-from teledu.models.attributeValue import AttributeValue
+from attributeValue import AttributeValue
 
 class CharacterAttribute(AttributeValue):
   character = models.ForeignKey(Character)

@@ -1,6 +1,6 @@
 from django.db import models
 from gameSystem import GameSystem
-from teledu.models.attributeDefinition import AttributeDefinition
+from attributeDefinition import AttributeDefinition
 
 class CharacterAttributeDefinition(AttributeDefinition):
   gameSystem = models.ForeignKey(GameSystem, verbose_name = 'Game System', related_name = 'characterAttributeDefinitions')
@@ -14,4 +14,8 @@ class CharacterAttributeDefinition(AttributeDefinition):
 
   def __unicode__(self):
     return '%s - %s' % (self.gameSystem.name, self.name)
+
+  def _getAttributes(self, instance):
+    from characterAttribute import CharacterAttribute
+    return CharacterAttribute.objects.filter(character = instance, definition = self)
 
