@@ -7,8 +7,7 @@ class WhenGettingConceptAttributes(TeleduTestCase):
     sourceDefinition = self.addAttrDefnToCharacter(type = 'concept', concept = self.concept, default = conceptInstance.id)
 
     calculatedDefinition = self.addAttrDefnToCharacter(calcFunction = "result = attr('%s.%s')" % (sourceDefinition.name, self.conceptAttrDefn.name))
-    attribute = self.getCharacterAttributeForDefinition(calculatedDefinition)
-    actual = attribute.calculateNewValue()
+    actual = calculatedDefinition.calculateNewValue(self.character)
 
     self.assertEqual(actual, expected)
 

@@ -1,7 +1,7 @@
 from django.db import models
 from gameSystem import GameSystem
 from attributeDefinition import AttributeDefinition
-from teledu.models.lib import AttributeDependentGraph
+from teledu.models.lib import AttributeDependentGraph, AttributeResolver
 
 class CharacterAttributeDefinition(AttributeDefinition):
   gameSystem = models.ForeignKey(GameSystem, verbose_name = 'Game System', related_name = 'characterAttributeDefinitions')
@@ -27,14 +27,27 @@ class CharacterAttributeDefinition(AttributeDefinition):
     changedAttributes = {self.id: self.getAttributeValue(instance)}
 
     for dependentDefinition in attrGraph.items():
-      newValue = dependentDefinition.calculateNewValueForInstance(instance)
+      newValue = dependentDefinition.calculateNewValue(instance)
       changedAttributes[dependentDefinition.id] = newValue
 
     return changedAttributes
 
-  def calculateNewValueForInstance(self, instance):
-    attribute = self.getAttributesForInstance(instance)[0]
-    attribute.calculateNewValue()
-    attribute.save()
-    return attribute.value
+  def calculateNewValue(self, character):
+    attributeValue = self.getAttributesForInstance(character)[0]
+    if self.calcFunction:
+      newValue = self._execCalcFunction(character)
+      attributeValue.raw_value = newValue
+      attributeValue.save()
+
+    return attributeValue.value
+
+  def _execCalcFunction(self, character):
+    scope = {
+      'attr': lambda name: AttributeResolver(character).getAttributeValue(name),
+      'result': None
+    }
+    exec self.calcFunction in scope
+    return scope['result']
+
+
 

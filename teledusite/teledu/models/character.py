@@ -44,7 +44,7 @@ class Character(models.Model):
   def recalculateAllAttributes(self):
     attrGraph = AttributeDependentGraph(self.attributes.all())
     for dep in attrGraph.items():
-      dep.calculateNewValueForInstance(self)
+      dep.calculateNewValue(self)
 
   def addMissingCharacterAttributeDefinitions(self, gameSystem = None):
     if gameSystem is None:

@@ -3,8 +3,7 @@ from teledu.tests.teleduTestCase import TeleduTestCase
 class WhenGettingSimpleValue(TeleduTestCase):
   def _calculateAttrFunctionForDefinition(self, definition):
     calculatedDefinition = self.addAttrDefnToCharacter(calcFunction = "result = attr('%s')" % definition.name)
-    attribute = self.getCharacterAttributeForDefinition(calculatedDefinition)
-    return attribute.calculateNewValue()
+    return calculatedDefinition.calculateNewValue(self.character)
 
   def testGettingTextAttributeReturnsAttributeValueAsString(self):
     sourceDefinition = self.addAttrDefnToCharacter(default = self.uniqStr())
