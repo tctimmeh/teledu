@@ -28,5 +28,8 @@ class DataType(models.Model):
     return value
 
   def isConcept(self):
-    return self.id == 4
+    return self.id == DataType.CONCEPT
+
+  def isText(self):
+    return self.id == DataType.TEXT
 

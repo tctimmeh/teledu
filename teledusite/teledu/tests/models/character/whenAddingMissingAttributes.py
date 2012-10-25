@@ -22,7 +22,7 @@ class WhenAddingMissingAttributes(TeleduTestCase):
     self.character.addMissingCharacterAttributeDefinitions()
     self.assertCharacterAttributeHasRawValue(newAttributeDefinition, instance.id)
 
-  def testAttributeValueIsConceptInstanceIdIfDefaultNamesInvalidConceptInstance(self):
+  def testAttributeValueIsEmptyIfDefaultNamesInvalidConceptInstance(self):
     newAttributeDefinition = self.createAttrDefinition(type = 'concept', concept=self.concept, default = self.uniqStr())
     self.character.addMissingCharacterAttributeDefinitions()
     self.assertCharacterAttributeHasRawValue(newAttributeDefinition, '')

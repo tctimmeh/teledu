@@ -5,14 +5,24 @@ class WhenGettingCharacterAttributeValue(TeleduTestCase):
     actual = self.character.getAttributeValue(self.charAttrDefn.id)
     self.assertEqual(actual, self.charAttr.value)
 
-  def testThatAttributeValueIsReturnedWhenSpecifyingAttributeDefinition(self):
+  def testThatAttributeValueIsReturnedWhenSpecifyingAttributeDefinitionObject(self):
     actual = self.character.getAttributeValue(self.charAttrDefn)
+    self.assertEqual(actual, self.charAttr.value)
+
+  def testThatAttributeValueIsReturnedWhenSpecifyingAttributeDefinitionName(self):
+    actual = self.character.getAttributeValue(self.charAttrDefn.name)
     self.assertEqual(actual, self.charAttr.value)
 
   def testThatEmptyValueIsReturnedForConceptAttributeWithEmptyRawValue(self):
     definition = self.addAttrDefnToCharacter(type = 'concept', concept = self.concept)
     actual = self.character.getAttributeValue(definition)
     self.assertEqual(actual, '')
+
+  def testThatConceptInstanceNameIsReturnedForConceptAttributeWithValidConceptId(self):
+    instance = self.createConceptInstance()
+    definition = self.addAttrDefnToCharacter(type = 'concept', concept = self.concept, default = instance.id)
+    actual = self.character.getAttributeValue(definition)
+    self.assertEqual(actual, instance.name)
 
   def testThatListAttributesReturnListOfValues(self):
     self.charAttrDefn.list = True

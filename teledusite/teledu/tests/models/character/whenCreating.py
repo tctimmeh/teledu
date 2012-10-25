@@ -12,12 +12,6 @@ class WhenCreatingCharacter(TeleduTestCase):
     self.noDefaultDefn = self.createAttrDefinition(type = 'concept', concept = self.concept)
     self.character = Character.create(gameSystem = self.gameSystem, name = self.name)
 
-  def testThatCharacterIsAddedToDatabase(self):
-    self.assertTrue(self.character.id is not None)
-
-  def testThatCharacterHaveGivenName(self):
-    self.assertEqual(self.character.name, self.name)
-
   def testThatCharacterHasAttributesForGivenGameSystem(self):
     actual = CharacterAttribute.objects.filter(character = self.character, definition = self.charAttrDefn)
     self.assertGreater(len(actual), 0)
