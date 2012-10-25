@@ -32,7 +32,7 @@ def createConceptInstanceAttributes(sender, **kwargs):
     return
 
   from conceptAttributeValue import ConceptAttributeValue
-  definitions = instance.concept.attributeDefinitions.all()
-  for definition in definitions:
-    ConceptAttributeValue.objects.create(instance = instance, definition = definition)
+  attributes = instance.concept.attributes.all()
+  for attribute in attributes:
+    ConceptAttributeValue.objects.create(instance = instance, attribute = attribute)
 

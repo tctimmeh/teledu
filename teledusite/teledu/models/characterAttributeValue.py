@@ -5,11 +5,11 @@ from attributeValue import AttributeValue
 
 class CharacterAttributeValue(AttributeValue):
   character = models.ForeignKey(Character)
-  definition = models.ForeignKey(CharacterAttribute)
+  attribute = models.ForeignKey(CharacterAttribute)
 
   class Meta:
     app_label = 'teledu'
 
   def __unicode__(self):
-    return '%s [%s] = [%s]' % (self.character.name, self.definition.name, self.raw_value)
+    return '%s [%s] = [%s]' % (self.character.name, self.attribute.name, self.raw_value)
 

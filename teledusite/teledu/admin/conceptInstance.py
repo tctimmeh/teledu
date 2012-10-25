@@ -12,8 +12,8 @@ class ConceptAttributeValueInline(admin.StackedInline):
   form = ConceptInstanceAdminForm
   extra = 0
   can_delete = False
-  fields = [('definition', 'raw_value')]
-  readonly_fields = ['definition']
+  fields = [('attribute', 'raw_value')]
+  readonly_fields = ['attribute']
 
 class ConceptInstanceAdmin(admin.ModelAdmin):
   search_fields = ['concept__name', 'name']

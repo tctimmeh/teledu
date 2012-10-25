@@ -3,11 +3,11 @@ from teledu.tests.teleduTestCase import TeleduTestCase
 class WhenGettingConceptAttributes(TeleduTestCase):
   def testGettingAttributeOfConceptReturnsConceptInstanceValue(self):
     expected = self.uniqStr()
-    conceptInstance = self.createConceptInstance(attributes = {self.conceptAttrDefn: expected})
-    sourceDefinition = self.addAttrDefnToCharacter(type = 'concept', concept = self.concept, default = conceptInstance.id)
+    conceptInstance = self.createConceptInstance(attributes = {self.conceptAttr: expected})
+    sourceAttribute = self.addAttributeToCharacter(type = 'concept', concept = self.concept, default = conceptInstance.id)
 
-    calculatedDefinition = self.addAttrDefnToCharacter(calcFunction = "result = attr('%s.%s')" % (sourceDefinition.name, self.conceptAttrDefn.name))
-    actual = calculatedDefinition.calculateNewValue(self.character)
+    calculatedAttribute = self.addAttributeToCharacter(calcFunction = "result = attr('%s.%s')" % (sourceAttribute.name, self.conceptAttr.name))
+    actual = calculatedAttribute.calculateNewValue(self.character)
 
     self.assertEqual(actual, expected)
 

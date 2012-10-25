@@ -22,18 +22,18 @@ class Character(models.Model):
   @classmethod
   def create(cls, gameSystem, name):
     newCharacter = Character.objects.create(name = name)
-    newCharacter.addMissingCharacterAttributeDefinitions(gameSystem = gameSystem)
+    newCharacter.addMissingCharacterAttributes(gameSystem = gameSystem)
     return newCharacter
 
-  def getAttributeValue(self, definition):
-    definition = self._getAttributeDefinition(definition)
-    return definition.getAttributeValue(self)
+  def getAttributeValue(self, attribute):
+    attribute = self._getAttribute(attribute)
+    return attribute.getAttributeValue(self)
 
-  def setAttributeValue(self, definition, value):
-    definition = self._getAttributeDefinition(definition)
-    return definition.setAttributeValue(self, value)
+  def setAttributeValue(self, attribute, value):
+    attribute = self._getAttribute(attribute)
+    return attribute.setAttributeValue(self, value)
 
-  def _getAttributeDefinition(self, attribute):
+  def _getAttribute(self, attribute):
     if isinstance(attribute, CharacterAttribute):
       return attribute
     elif isinstance(attribute, int):
@@ -46,31 +46,31 @@ class Character(models.Model):
     for dep in attrGraph.items():
       dep.calculateNewValue(self)
 
-  def addMissingCharacterAttributeDefinitions(self, gameSystem = None):
+  def addMissingCharacterAttributes(self, gameSystem = None):
     if gameSystem is None:
       gameSystem = self.gameSystem
 
-    for attributeDefinition in gameSystem.characterAttributes.all():
-      attributes = attributeDefinition.getAttributesForInstance(self)
+    for attribute in gameSystem.characterAttributes.all():
+      attributes = attribute.getAttributesForInstance(self)
       if not attributes:
-        self._createCharacterAttributeFromDefinition(attributeDefinition)
+        self._createAttributeValue(attribute)
 
-  def _getInitialValueForForAttributeDefinition(self, definition):
+  def _getInitialValueForForAttribute(self, attribute):
     from teledu.models import ConceptInstance
-    if not definition.default:
-      return definition.default
+    if not attribute.default:
+      return attribute.default
 
-    if definition.dataType.isConcept():
+    if attribute.dataType.isConcept():
       try:
-        return ConceptInstance.objects.get(name = definition.default, concept = definition.valueConcept).id
+        return ConceptInstance.objects.get(name = attribute.default, concept = attribute.valueConcept).id
       except ConceptInstance.DoesNotExist:
         return ''
     else:
-      return definition.default
+      return attribute.default
 
-  def _createCharacterAttributeFromDefinition(self, attributeDefinition):
-    initialValue = self._getInitialValueForForAttributeDefinition(attributeDefinition)
-    CharacterAttributeValue.objects.create(character = self, definition = attributeDefinition, raw_value = initialValue)
+  def _createAttributeValue(self, attribute):
+    initialValue = self._getInitialValueForForAttribute(attribute)
+    CharacterAttributeValue.objects.create(character = self, attribute = attribute, raw_value = initialValue)
 
 from characterAttributeValue import CharacterAttributeValue
 

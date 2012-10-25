@@ -3,30 +3,30 @@ from ..models import CharacterAttribute, DataType
 
 register = template.Library()
 
-def _createSpanAttributeElement(attributeDefinition, value):
-  out = ['<span', 'id="attr_%d"' % attributeDefinition.id, 'class="char_attr"']
-  if attributeDefinition.dataType.id == DataType.CONCEPT:
+def _createSpanAttributeElement(attribute, value):
+  out = ['<span', 'id="attr_%d"' % attribute.id, 'class="char_attr"']
+  if attribute.dataType.id == DataType.CONCEPT:
     out.append('data-editor="select"')
   out.append('>%s</span>' % value)
   return ' '.join(out)
 
-def _createListAttributeElement(attributeDefinition, values):
-  out = ['<ul', 'id="attr_%d"' % attributeDefinition.id, 'class="char_attr"', '>']
+def _createListAttributeElement(attribute, values):
+  out = ['<ul', 'id="attr_%d"' % attribute.id, 'class="char_attr"', '>']
   for value in values:
     out.append('<li>%s</li>' % value)
   out.append('</ul>')
   return ' '.join(out)
 
 @register.simple_tag(name = 'char_attr', takes_context = True)
-def createAttributeElement(context, attributeDefinition):
+def createAttributeElement(context, attribute):
   character = context['character']
-  value = character.getAttributeValue(attributeDefinition)
+  value = character.getAttributeValue(attribute)
 
-  if isinstance(attributeDefinition, str) or isinstance(attributeDefinition, unicode):
-    attributeDefinition = CharacterAttribute.objects.get(gameSystem = character.gameSystem, name = attributeDefinition)
+  if isinstance(attribute, str) or isinstance(attribute, unicode):
+    attribute = CharacterAttribute.objects.get(gameSystem = character.gameSystem, name = attribute)
 
-  if attributeDefinition.list:
-    return _createListAttributeElement(attributeDefinition, value)
+  if attribute.list:
+    return _createListAttributeElement(attribute, value)
   else:
-    return _createSpanAttributeElement(attributeDefinition, value)
+    return _createSpanAttributeElement(attribute, value)
 

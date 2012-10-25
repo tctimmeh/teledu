@@ -24,18 +24,18 @@ class TeleduLiveTestCase(LiveServerTestCase, TestHelpers):
     self.conceptInstance = self.createConceptInstance()
     self.character = self.createCharacter()
 
-    self.charAttrDefn = self.createAttrDefinition(default = self.uniqStr())
-    self.charAttr = self.createAttrForCharacter(self.charAttrDefn)
+    self.charAttr = self.createAttribute(default = self.uniqStr())
+    self.charAttrValue = self.createAttributeValueForCharacter(self.charAttr)
 
-    self.intCharAttrDefn = self.createAttrDefinition(type = 'integer', default = self.uniqInt())
-    self.intCharAttr = self.createAttrForCharacter(self.intCharAttrDefn)
+    self.intCharAttr = self.createAttribute(type = 'integer', default = self.uniqInt())
+    self.intCharAttrValue = self.createAttributeValueForCharacter(self.intCharAttr)
 
-    self.conceptCharAttrDefn = self.createAttrDefinition(type = 'concept', concept = self.concept)
-    self.conceptCharAttr = self.createAttrForCharacter(self.conceptCharAttrDefn, initialValue = self.conceptInstance.id)
+    self.conceptCharAttr = self.createAttribute(type = 'concept', concept = self.concept)
+    self.conceptCharAttrValue = self.createAttributeValueForCharacter(self.conceptCharAttr, initialValue = self.conceptInstance.id)
 
-    self.dependentCharAttrDefn = self.createAttrDefinition(calcFunction = "result = attr('%s')" % self.charAttrDefn.name,
-      dependencies = [self.charAttrDefn])
-    self.dependentCharAttr = self.createAttrForCharacter(self.dependentCharAttrDefn)
+    self.dependentCharAttr = self.createAttribute(calcFunction = "result = attr('%s')" % self.charAttr.name,
+      dependencies = [self.charAttr])
+    self.dependentCharAttrValue = self.createAttributeValueForCharacter(self.dependentCharAttr)
 
   @classmethod
   def setUpClass(cls):

@@ -16,12 +16,12 @@ class TestCharacterSheet(TeleduLiveTestCase):
     input.send_keys(newValue)
     input.submit()
 
-  def editAttributeAndWaitForChange(self, attributeDefinition, newValue, changeDefinition = None):
-    element = self.driver.find_element_by_id('attr_%d' % attributeDefinition.id)
+  def editAttributeAndWaitForChange(self, attribute, newValue, changeAttribute = None):
+    element = self.driver.find_element_by_id('attr_%d' % attribute.id)
     changeElement = element
 
-    if changeDefinition is not None:
-      changeElement = self.driver.find_element_by_id('attr_%d' % changeDefinition.id)
+    if changeAttribute is not None:
+      changeElement = self.driver.find_element_by_id('attr_%d' % changeAttribute.id)
 
     self.editElement(element, newValue)
     WebDriverWait(self.driver, 5).until(lambda driver: self.elementHasText(changeElement, newValue))
@@ -42,37 +42,37 @@ class TestCharacterSheet(TeleduLiveTestCase):
     self.assertElementTextIs(nameElement, self.character.name)
 
   def testTextAttributesOnPage(self):
-    element = self.driver.find_element_by_id('attr_%d' % self.charAttrDefn.id)
-    self.assertElementTextIs(element, self.charAttr.raw_value)
+    element = self.driver.find_element_by_id('attr_%d' % self.charAttr.id)
+    self.assertElementTextIs(element, self.charAttrValue.raw_value)
 
   def testIntegerAttributesOnPage(self):
-    element = self.driver.find_element_by_id('attr_%d' % self.intCharAttrDefn.id)
-    self.assertElementTextIs(element, int(self.intCharAttr.raw_value))
+    element = self.driver.find_element_by_id('attr_%d' % self.intCharAttr.id)
+    self.assertElementTextIs(element, int(self.intCharAttrValue.raw_value))
 
   def testConceptAttributeOnPageAsConceptInstanceName(self):
-    element = self.driver.find_element_by_id('attr_%d' % self.conceptCharAttrDefn.id)
+    element = self.driver.find_element_by_id('attr_%d' % self.conceptCharAttr.id)
     self.assertElementTextIs(element, self.conceptInstance.name)
 
   def testEditingTextAttributeChangesCharacterInDatabase(self):
     expected = self.uniqStr()
-    self.editAttributeAndWaitForChange(self.charAttrDefn, expected)
-    self.assertCharacterAttributeHasRawValue(self.charAttr, expected)
+    self.editAttributeAndWaitForChange(self.charAttr, expected)
+    self.assertCharacterAttributeHasRawValue(self.charAttrValue, expected)
 
   def testEditingAttributeWithDependentsUpdatesDependentAttributes(self):
     expected = self.uniqStr()
-    self.editAttributeAndWaitForChange(self.charAttrDefn, expected, changeDefinition = self.dependentCharAttrDefn)
+    self.editAttributeAndWaitForChange(self.charAttr, expected, changeAttribute = self.dependentCharAttr)
     self.assertCharacterAttributeHasRawValue(self.dependentCharAttr, expected)
 
   def testAttributeMarkedAsHiddenDoesNotAppearOnCharacterSheet(self):
-    self.charAttrDefn.display = False
-    self.charAttrDefn.save()
+    self.charAttr.display = False
+    self.charAttr.save()
     self.driver.refresh()
-    self.assertRaises(NoSuchElementException, self.driver.find_element_by_id, 'attr_%d' % self.charAttrDefn.id)
+    self.assertRaises(NoSuchElementException, self.driver.find_element_by_id, 'attr_%d' % self.charAttr.id)
 
   def testChoosingNewValueForConceptAttributeUpdatesCharacterInDatabase(self):
     conceptInstance2 = self.createConceptInstance()
 
-    element = self.driver.find_element_by_id('attr_%d' % self.conceptCharAttrDefn.id)
+    element = self.driver.find_element_by_id('attr_%d' % self.conceptCharAttr.id)
     element.click()
     select = Select(element.find_element_by_tag_name('select'))
     self.assertEqual(select.first_selected_option.text, self.conceptInstance.name)
@@ -81,19 +81,19 @@ class TestCharacterSheet(TeleduLiveTestCase):
     WebDriverWait(self.driver, 5).until(lambda driver: self.elementHasText(element, conceptInstance2.name))
 
     expected = conceptInstance2.name
-    actual = CharacterAttributeValue.objects.get(character = self.character, definition = self.conceptCharAttrDefn).value
+    actual = CharacterAttributeValue.objects.get(character = self.character, attribute = self.conceptCharAttr).value
     self.assertEqual(actual, expected)
 
   def testListAttributesDisplayedAsUnorderedList(self):
-    self.charAttrDefn.list = True
-    self.charAttrDefn.save()
-    attr2 = self.createAttrForCharacter(self.charAttrDefn, initialValue = self.uniqStr())
+    self.charAttr.list = True
+    self.charAttr.save()
+    attr2 = self.createAttributeValueForCharacter(self.charAttr, initialValue = self.uniqStr())
     self.driver.refresh()
 
-    expected = [self.charAttr.value, attr2.value]
+    expected = [self.charAttrValue.value, attr2.value]
     expected.sort()
 
-    element = self.driver.find_element_by_id('attr_%d' % self.charAttrDefn.id)
+    element = self.driver.find_element_by_id('attr_%d' % self.charAttr.id)
     self.assertTrue(element.tag_name, 'ul')
 
     items = element.find_elements_by_tag_name('li')

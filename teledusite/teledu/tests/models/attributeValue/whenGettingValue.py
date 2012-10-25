@@ -3,18 +3,18 @@ from teledu.tests.teleduTestCase import TeleduTestCase
 
 class WhenGettingValue(TeleduTestCase):
   def testThatIntegerAttributesAreReturnedAsInt(self):
-    definition = self.addAttrDefnToCharacter(type = 'integer', default = self.uniqInt())
-    actual = self.getCharacterAttributeForDefinition(definition).value
+    attribute = self.addAttributeToCharacter(type = 'integer', default = self.uniqInt())
+    actual = self.getCharacterAttributeValueObject(attribute).value
     self.assertIsInstance(actual, int)
 
   def testThatRealAttributesAreReturnedAsFloat(self):
-    definition = self.addAttrDefnToCharacter(type = 'real', default = random.random())
-    actual = self.getCharacterAttributeForDefinition(definition).value
+    attribute = self.addAttributeToCharacter(type = 'real', default = random.random())
+    actual = self.getCharacterAttributeValueObject(attribute).value
     self.assertIsInstance(actual, float)
 
   def testThatConceptAttributesAreReturnedAsConceptInstanceName(self):
     conceptInstance = self.createConceptInstance()
-    definition = self.addAttrDefnToCharacter(type = 'concept', default = conceptInstance.id)
-    actual = self.getCharacterAttributeForDefinition(definition).value
+    attribute = self.addAttributeToCharacter(type = 'concept', default = conceptInstance.id)
+    actual = self.getCharacterAttributeValueObject(attribute).value
     self.assertEqual(actual, conceptInstance.name)
 

@@ -12,8 +12,8 @@ class CharacterAttributeValueInline(admin.StackedInline):
   form = CharacterAttributeForm
   extra = 0
   can_delete = False
-  fields = [('definition', 'raw_value')]
-  readonly_fields = ['definition']
+  fields = [('attribute', 'raw_value')]
+  readonly_fields = ['attribute']
 
 class CharacterAdmin(admin.ModelAdmin):
   inlines = [CharacterAttributeValueInline,]
@@ -27,7 +27,7 @@ class CharacterAdmin(admin.ModelAdmin):
 
   def applyCurrentCharacterAttributesToAllCharacters(self, request, querySet):
     for character in querySet:
-      character.addMissingCharacterAttributeDefinitions()
+      character.addMissingCharacterAttributes()
     self.message_user(request, "You successfully applied all current rules to %s characters" % len(querySet))
   applyCurrentCharacterAttributesToAllCharacters.short_description = "Apply all current character attributes to selected characters"
 

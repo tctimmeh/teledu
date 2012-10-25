@@ -12,7 +12,7 @@ class WhenSettingAttribute(TeleduTestCase):
     if characterId is None:
       characterId = self.character.id
     if attributeId is None:
-      attributeId = self.charAttrDefn.id
+      attributeId = self.charAttr.id
     if value is None:
       value = self.uniqStr()
 
@@ -32,17 +32,17 @@ class WhenSettingAttribute(TeleduTestCase):
     self.assertEqual(self.response.status_code, 404)
 
   def testThatAttributeGetsNewValue(self):
-    actual = CharacterAttributeValue.objects.get(pk = self.charAttr.id).raw_value
+    actual = CharacterAttributeValue.objects.get(pk = self.charAttrValue.id).raw_value
     self.assertEqual(actual, self.newValue)
 
   def testThatResponseContainsJsonObjectOfEveryChangedAttribute(self):
-    dependentAttribute = self.addAttrDefnToCharacter(dependencies=[self.charAttrDefn], default = self.uniqStr())
+    dependentAttribute = self.addAttributeToCharacter(dependencies=[self.charAttr], default = self.uniqStr())
 
     value = self.uniqStr()
     response = self._doRequest(value = value)
     expected = json.dumps({
-      self.charAttrDefn.id: value,
-      dependentAttribute.id: self.getCharacterAttributeValueByDefinition(dependentAttribute),
+      self.charAttr.id: value,
+      dependentAttribute.id: self.getCharacterAttributeValue(dependentAttribute),
     })
     actual = response.content
     self.assertEqual(actual, expected)
@@ -50,13 +50,13 @@ class WhenSettingAttribute(TeleduTestCase):
   def testThatResponseContainsConceptInstanceNames(self):
     instance1 = self.createConceptInstance(concept = self.concept)
     instance2 = self.createConceptInstance(concept = self.concept)
-    changeDefinition = self.addAttrDefnToCharacter(type = 'concept', concept = self.concept, default = instance1.id)
-    dependentAttribute = self.addAttrDefnToCharacter(dependencies = [changeDefinition], type = 'concept', concept = self.concept, default = instance1.id)
+    changeAttribute = self.addAttributeToCharacter(type = 'concept', concept = self.concept, default = instance1.id)
+    dependentAttribute = self.addAttributeToCharacter(dependencies = [changeAttribute], type = 'concept', concept = self.concept, default = instance1.id)
 
-    response = self._doRequest(value = instance2.id, attributeId = changeDefinition.id)
+    response = self._doRequest(value = instance2.id, attributeId = changeAttribute.id)
     expected = json.dumps({
-      changeDefinition.id: self.getCharacterAttributeValueByDefinition(changeDefinition),
-      dependentAttribute.id: self.getCharacterAttributeValueByDefinition(dependentAttribute),
+      changeAttribute.id: self.getCharacterAttributeValue(changeAttribute),
+      dependentAttribute.id: self.getCharacterAttributeValue(dependentAttribute),
     })
     actual = response.content
     self.assertEqual(actual, expected)

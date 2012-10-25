@@ -8,23 +8,23 @@ class WhenCreatingCharacter(TeleduTestCase):
 
     self.conceptInstance = ConceptInstance.objects.create(name = self.uniqStr(), concept = self.concept)
 
-    self.conceptAttrDefn = self.addAttrDefnToCharacter(type = 'concept', concept = self.concept, default = self.conceptInstance.name)
-    self.noDefaultDefn = self.createAttrDefinition(type = 'concept', concept = self.concept)
+    self.conceptAttr = self.addAttributeToCharacter(type = 'concept', concept = self.concept, default = self.conceptInstance.name)
+    self.noDefaultAttribute = self.createAttribute(type = 'concept', concept = self.concept)
     self.character = Character.create(gameSystem = self.gameSystem, name = self.name)
 
   def testThatCharacterHasAttributesForGivenGameSystem(self):
-    actual = CharacterAttributeValue.objects.filter(character = self.character, definition = self.charAttrDefn)
+    actual = CharacterAttributeValue.objects.filter(character = self.character, attribute = self.charAttr)
     self.assertGreater(len(actual), 0)
 
   def testThatAttributesGetDefaultValues(self):
-    actual = self.getCharacterAttributeRawValueByDefinition(self.charAttrDefn)
-    self.assertEqual(actual, self.charAttrDefn.default)
+    actual = self.getCharacterAttributeRawValue(self.charAttr)
+    self.assertEqual(actual, self.charAttr.default)
 
   def testThatConceptTypeAttributesGetIdOfNamedConceptInstance(self):
-    actual = self.getCharacterAttributeRawValueByDefinition(self.conceptAttrDefn)
+    actual = self.getCharacterAttributeRawValue(self.conceptAttr)
     self.assertEqual(int(actual), self.conceptInstance.id)
 
-  def testThatConceptTypeAttributesGetEmptyValueForDefinitionsWithNoDefault(self):
-    actual = self.getCharacterAttributeRawValueByDefinition(self.noDefaultDefn)
+  def testThatConceptTypeAttributesGetEmptyValueWhenNoDefaultIsGiven(self):
+    actual = self.getCharacterAttributeRawValue(self.noDefaultAttribute)
     self.assertEqual(actual, '')
 

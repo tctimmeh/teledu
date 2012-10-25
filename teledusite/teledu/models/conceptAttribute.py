@@ -3,7 +3,7 @@ from concept import Concept
 from attribute import Attribute
 
 class ConceptAttribute(Attribute):
-  concept = models.ForeignKey(Concept, related_name = 'attributeDefinitions')
+  concept = models.ForeignKey(Concept, related_name = 'attributes')
 
   class Meta:
     app_label = 'teledu'

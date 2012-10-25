@@ -15,7 +15,7 @@ class TestHelpers(object):
   def createGameSystem(self):
     return GameSystem.objects.create(name = self.uniqStr())
 
-  def createAttrDefinition(self, gameSystem = None, calcFunction = None, name = None, type = 'text', default = '',
+  def createAttribute(self, gameSystem = None, calcFunction = None, name = None, type = 'text', default = '',
                            concept = None, dependencies = [], list = False):
     if gameSystem is None:
       gameSystem = self.gameSystem
@@ -24,21 +24,21 @@ class TestHelpers(object):
 
     dataType = DataType.objects.get(name = type)
 
-    definition = CharacterAttribute.objects.create(pk = self.uniqInt(), gameSystem = gameSystem, name = name,
+    attribute = CharacterAttribute.objects.create(pk = self.uniqInt(), gameSystem = gameSystem, name = name,
       calcFunction = calcFunction, dataType = dataType, default = default, valueConcept = concept, list = list)
     for dependency in dependencies:
-      CharacterAttributeDependency.objects.create(attribute = definition, dependency = dependency)
-    return definition
+      CharacterAttributeDependency.objects.create(attribute = attribute, dependency = dependency)
+    return attribute
 
   def createCharacter(self):
     return Character.objects.create(name = self.uniqStr())
 
-  def createAttrForCharacter(self, attrDefinition, character = None, initialValue = None):
+  def createAttributeValueForCharacter(self, attribute, character = None, initialValue = None):
     if character is None:
       character = self.character
     if initialValue is None:
-      initialValue = attrDefinition.default
-    return CharacterAttributeValue.objects.create(character = character, definition = attrDefinition, raw_value = initialValue)
+      initialValue = attribute.default
+    return CharacterAttributeValue.objects.create(character = character, attribute = attribute, raw_value = initialValue)
 
   def createCharacterSheetTemplate(self, gameSystem = None):
     if gameSystem is None:
@@ -52,13 +52,13 @@ class TestHelpers(object):
       name = self.uniqStr()
     return Concept.objects.create(gameSystem = gameSystem, name = name)
 
-  def addAttrDefnToCharacter(self, dependencies = [], calcFunction = None, name = None, default = '', type = 'text', concept = None, character = None):
-    definition = self.createAttrDefinition(calcFunction = calcFunction, name = name, type = type, default = default,
+  def addAttributeToCharacter(self, dependencies = [], calcFunction = None, name = None, default = '', type = 'text', concept = None, character = None):
+    attribute = self.createAttribute(calcFunction = calcFunction, name = name, type = type, default = default,
       concept = concept, dependencies = dependencies)
-    self.createAttrForCharacter(attrDefinition = definition, character = character)
-    return definition
+    self.createAttributeValueForCharacter(attribute = attribute, character = character)
+    return attribute
 
-  def createConceptAttrDefn(self, concept = None, name = None, type = 'integer'):
+  def createConceptAttr(self, concept = None, name = None, type = 'integer'):
     if concept is None:
       concept = self.concept
     if name is None:
@@ -74,33 +74,33 @@ class TestHelpers(object):
       name = self.uniqStr()
 
     instance = ConceptInstance.objects.create(concept = concept, name = name)
-    for definition, value in attributes.items():
-      conceptAttribute = ConceptAttributeValue.objects.get(definition = definition, instance = instance)
+    for attribute, value in attributes.items():
+      conceptAttribute = ConceptAttributeValue.objects.get(attribute = attribute, instance = instance)
       conceptAttribute.raw_value = value
       conceptAttribute.save()
     return instance
 
-  def assertCharacterAttributeHasRawValue(self, attr, expected):
-    if isinstance(attr, CharacterAttributeValue):
-      actual = CharacterAttributeValue.objects.get(pk = attr.id).raw_value
+  def assertCharacterAttributeHasRawValue(self, attribute, expected):
+    if isinstance(attribute, CharacterAttributeValue):
+      actual = CharacterAttributeValue.objects.get(pk = attribute.id).raw_value
     else:
-      actual = CharacterAttributeValue.objects.get(definition = attr, character = self.character).raw_value
+      actual = CharacterAttributeValue.objects.get(attribute = attribute, character = self.character).raw_value
     self.assertEqual(actual, unicode(expected))
 
-  def getCharacterAttributeForDefinition(self, definition, character = None):
+  def getCharacterAttributeValueObject(self, attribute, character = None):
     if character is None:
       character = self.character
 
-    return CharacterAttributeValue.objects.get(definition = definition, character = character)
+    return CharacterAttributeValue.objects.get(attribute = attribute, character = character)
 
-  def getCharacterAttributeValueByDefinition(self, definition, character = None):
-    attribute = self.getCharacterAttributeForDefinition(definition, character)
+  def getCharacterAttributeValue(self, attribute, character = None):
+    attribute = self.getCharacterAttributeValueObject(attribute, character)
     return attribute.value
 
-  def getCharacterAttributeRawValueByDefinition(self, definition, character = None):
-    attribute = self.getCharacterAttributeForDefinition(definition, character)
+  def getCharacterAttributeRawValue(self, attribute, character = None):
+    attribute = self.getCharacterAttributeValueObject(attribute, character)
     return attribute.raw_value
 
-  def assertCharacterHasAttributeForDefinition(self, definition):
-    CharacterAttributeValue.objects.get(character = self.character, definition = definition)
+  def assertCharacterHasAttributeValue(self, attribute):
+    CharacterAttributeValue.objects.get(character = self.character, attribute = attribute)
 

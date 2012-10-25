@@ -1,51 +1,51 @@
 from teledu.tests.teleduTestCase import TeleduTestCase
 
 class WhenGettingCharacterAttributeValue(TeleduTestCase):
-  def testThatAttributeValueIsReturnedWhenSpecifyingAttributeDefinitionId(self):
-    actual = self.character.getAttributeValue(self.charAttrDefn.id)
-    self.assertEqual(actual, self.charAttr.value)
+  def testThatAttributeValueIsReturnedWhenSpecifyingAttributeId(self):
+    actual = self.character.getAttributeValue(self.charAttr.id)
+    self.assertEqual(actual, self.charAttrValue.value)
 
-  def testThatAttributeValueIsReturnedWhenSpecifyingAttributeDefinitionObject(self):
-    actual = self.character.getAttributeValue(self.charAttrDefn)
-    self.assertEqual(actual, self.charAttr.value)
+  def testThatAttributeValueIsReturnedWhenSpecifyingAttributeObject(self):
+    actual = self.character.getAttributeValue(self.charAttr)
+    self.assertEqual(actual, self.charAttrValue.value)
 
-  def testThatAttributeValueIsReturnedWhenSpecifyingAttributeDefinitionName(self):
-    actual = self.character.getAttributeValue(self.charAttrDefn.name)
-    self.assertEqual(actual, self.charAttr.value)
+  def testThatAttributeValueIsReturnedWhenSpecifyingAttributeName(self):
+    actual = self.character.getAttributeValue(self.charAttr.name)
+    self.assertEqual(actual, self.charAttrValue.value)
 
   def testThatEmptyValueIsReturnedForConceptAttributeWithEmptyRawValue(self):
-    definition = self.addAttrDefnToCharacter(type = 'concept', concept = self.concept)
-    actual = self.character.getAttributeValue(definition)
+    attribute = self.addAttributeToCharacter(type = 'concept', concept = self.concept)
+    actual = self.character.getAttributeValue(attribute)
     self.assertEqual(actual, '')
 
   def testThatConceptInstanceNameIsReturnedForConceptAttributeWithValidConceptId(self):
     instance = self.createConceptInstance()
-    definition = self.addAttrDefnToCharacter(type = 'concept', concept = self.concept, default = instance.id)
-    actual = self.character.getAttributeValue(definition)
+    attribute = self.addAttributeToCharacter(type = 'concept', concept = self.concept, default = instance.id)
+    actual = self.character.getAttributeValue(attribute)
     self.assertEqual(actual, instance.name)
 
   def testThatListAttributesReturnListOfValues(self):
-    self.charAttrDefn.list = True
-    self.charAttrDefn.save()
-    attr2 = self.createAttrForCharacter(self.charAttrDefn)
-    expected = [self.charAttr.value, attr2.value]
+    self.charAttr.list = True
+    self.charAttr.save()
+    attr2 = self.createAttributeValueForCharacter(self.charAttr)
+    expected = [self.charAttrValue.value, attr2.value]
     expected.sort()
-    actual = self.character.getAttributeValue(self.charAttrDefn)
+    actual = self.character.getAttributeValue(self.charAttr)
     actual.sort()
     self.assertEqual(actual, expected)
 
   def testThatListAttributesWithNoValuesReturnEmptyList(self):
-    definition = self.createAttrDefinition(list = True)
-    actual = self.character.getAttributeValue(definition)
+    attribute = self.createAttribute(list = True)
+    actual = self.character.getAttributeValue(attribute)
     self.assertEqual(actual, [])
 
   def testThatListValuesAreReturnedAsCorrectTypes(self):
-    definition = self.createAttrDefinition(type = 'integer', list = True)
-    attr1 = self.createAttrForCharacter(definition, initialValue=self.uniqInt())
-    attr2 = self.createAttrForCharacter(definition, initialValue=self.uniqInt())
+    attribute = self.createAttribute(type = 'integer', list = True)
+    attr1 = self.createAttributeValueForCharacter(attribute, initialValue=self.uniqInt())
+    attr2 = self.createAttributeValueForCharacter(attribute, initialValue=self.uniqInt())
     expected = [attr1.value, attr2.value]
     expected.sort()
-    actual = self.character.getAttributeValue(definition)
+    actual = self.character.getAttributeValue(attribute)
     actual.sort()
     self.assertEquals(actual, expected)
 

@@ -76,18 +76,18 @@ def deleteCharacter(request, charId):
 def getCharacterAttributeChoices(request, charId, attrId):
   character = get_object_or_404(Character, id = charId)
   try:
-    definition = character.attributes.get(id = attrId)
+    attribute = character.attributes.get(id = attrId)
   except CharacterAttribute.DoesNotExist:
     raise Http404()
 
-  if definition.dataType.id != DataType.CONCEPT:
+  if attribute.dataType.id != DataType.CONCEPT:
     return HttpResponse('')
 
-  conceptInstances = ConceptInstance.objects.filter(concept = definition.valueConcept)
+  conceptInstances = ConceptInstance.objects.filter(concept = attribute.valueConcept)
   out = {}
   for instance in conceptInstances:
     out[instance.id] = instance.name
-  out['selected'] = CharacterAttributeValue.objects.get(character = character, definition = definition).raw_value
+  out['selected'] = CharacterAttributeValue.objects.get(character = character, attribute = attribute).raw_value
 
   return HttpResponse(json.dumps(out))
 

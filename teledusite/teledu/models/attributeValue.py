@@ -9,10 +9,10 @@ class AttributeValue(models.Model):
   @property
   def value(self):
     try:
-      result = self.definition.dataType.translateValue(self.raw_value)
+      result = self.attribute.dataType.translateValue(self.raw_value)
     except ValueError as e:
       raise ValueError('Failed to convert attribute [%s] with value [%s] to type [%s]: %s' % (
-        self.definition, self.raw_value, self.definition.dataType.name, e))
+        self.attribute, self.raw_value, self.attribute.dataType.name, e))
     return result
 
 
