@@ -1,6 +1,6 @@
 from django.template import Context
 from teledu.tests.teleduTestCase import TeleduTestCase
-from teledu.models import GameSystem, CharacterAttributeDefinition
+from teledu.models import GameSystem, CharacterAttribute
 from teledu.templatetags.character import createAttributeElement
 
 class WhenEmbeddingCharacterAttribute(TeleduTestCase):
@@ -48,7 +48,7 @@ class WhenEmbeddingCharacterAttribute(TeleduTestCase):
 
   def testThatAttributeElementIsReturnedUsingAttributeNameWhenManyGameSystemsHaveSameAttributeName(self):
     gameSystem = GameSystem.objects.create(name = 'something else')
-    CharacterAttributeDefinition.objects.create(gameSystem = gameSystem, name = self.charAttrDefn.name)
+    CharacterAttribute.objects.create(gameSystem = gameSystem, name = self.charAttrDefn.name)
 
     actual = createAttributeElement(self.context, self.charAttrDefn.name)
     self.assertElementForSimpleAttribute(actual)

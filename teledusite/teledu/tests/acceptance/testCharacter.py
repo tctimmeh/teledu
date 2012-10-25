@@ -1,8 +1,7 @@
-import unittest
 from selenium.webdriver.support.select import Select
 from selenium.common.exceptions import NoSuchElementException
-from teledu.models import CharacterAttribute
-from teleduLiveTestCase import TeleduLiveTestCase, setUpModule
+from teledu.models import CharacterAttributeValue
+from teleduLiveTestCase import TeleduLiveTestCase
 from selenium.webdriver.support.ui import WebDriverWait
 
 class TestCharacterSheet(TeleduLiveTestCase):
@@ -82,7 +81,7 @@ class TestCharacterSheet(TeleduLiveTestCase):
     WebDriverWait(self.driver, 5).until(lambda driver: self.elementHasText(element, conceptInstance2.name))
 
     expected = conceptInstance2.name
-    actual = CharacterAttribute.objects.get(character = self.character, definition = self.conceptCharAttrDefn).value
+    actual = CharacterAttributeValue.objects.get(character = self.character, definition = self.conceptCharAttrDefn).value
     self.assertEqual(actual, expected)
 
   def testListAttributesDisplayedAsUnorderedList(self):

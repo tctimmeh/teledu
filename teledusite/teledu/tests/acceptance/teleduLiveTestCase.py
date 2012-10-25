@@ -1,5 +1,4 @@
 import atexit
-import random
 from django.test import LiveServerTestCase
 from selenium.webdriver.chrome.webdriver import WebDriver
 from teledu.tests.testHelpers import TestHelpers

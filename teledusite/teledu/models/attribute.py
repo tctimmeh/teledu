@@ -1,10 +1,10 @@
 from django.db import models
-from teledu.models import DataType, GameSystemConcept
+from teledu.models import DataType, Concept
 
-class AttributeDefinition(models.Model):
+class Attribute(models.Model):
   name = models.CharField(max_length = 30)
   dataType = models.ForeignKey(DataType, default = 1, verbose_name = 'Data Type')
-  valueConcept = models.ForeignKey(GameSystemConcept, null = True, blank = True)
+  valueConcept = models.ForeignKey(Concept, null = True, blank = True)
   list = models.BooleanField(default = False)
 
   class Meta:

@@ -1,4 +1,4 @@
-from teledu.models import Character, CharacterAttribute, DataType, ConceptAttributeDefinition, ConceptInstance, ConceptInstanceAttribute
+from teledu.models import Character, ConceptInstance, CharacterAttributeValue
 from teledu.tests.teleduTestCase import TeleduTestCase
 
 class WhenCreatingCharacter(TeleduTestCase):
@@ -13,7 +13,7 @@ class WhenCreatingCharacter(TeleduTestCase):
     self.character = Character.create(gameSystem = self.gameSystem, name = self.name)
 
   def testThatCharacterHasAttributesForGivenGameSystem(self):
-    actual = CharacterAttribute.objects.filter(character = self.character, definition = self.charAttrDefn)
+    actual = CharacterAttributeValue.objects.filter(character = self.character, definition = self.charAttrDefn)
     self.assertGreater(len(actual), 0)
 
   def testThatAttributesGetDefaultValues(self):

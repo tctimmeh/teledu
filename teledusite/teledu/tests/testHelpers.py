@@ -1,6 +1,7 @@
 import random
 import string
-from teledu.models import GameSystem, DataType, CharacterAttributeDefinition, Character, CharacterAttribute, CharacterSheet, GameSystemConcept, CharacterAttributeDependency, ConceptAttributeDefinition, ConceptInstance, ConceptInstanceAttribute
+from teledu.models import GameSystem, DataType, CharacterAttribute, Character, CharacterAttributeValue, CharacterSheet, \
+  Concept, CharacterAttributeDependency, ConceptAttribute, ConceptInstance, ConceptAttributeValue
 
 class TestHelpers(object):
   def uniqInt(self):
@@ -23,7 +24,7 @@ class TestHelpers(object):
 
     dataType = DataType.objects.get(name = type)
 
-    definition = CharacterAttributeDefinition.objects.create(pk = self.uniqInt(), gameSystem = gameSystem, name = name,
+    definition = CharacterAttribute.objects.create(pk = self.uniqInt(), gameSystem = gameSystem, name = name,
       calcFunction = calcFunction, dataType = dataType, default = default, valueConcept = concept, list = list)
     for dependency in dependencies:
       CharacterAttributeDependency.objects.create(attribute = definition, dependency = dependency)
@@ -37,7 +38,7 @@ class TestHelpers(object):
       character = self.character
     if initialValue is None:
       initialValue = attrDefinition.default
-    return CharacterAttribute.objects.create(character = character, definition = attrDefinition, raw_value = initialValue)
+    return CharacterAttributeValue.objects.create(character = character, definition = attrDefinition, raw_value = initialValue)
 
   def createCharacterSheetTemplate(self, gameSystem = None):
     if gameSystem is None:
@@ -49,7 +50,7 @@ class TestHelpers(object):
       gameSystem = self.gameSystem
     if name is None:
       name = self.uniqStr()
-    return GameSystemConcept.objects.create(gameSystem = gameSystem, name = name)
+    return Concept.objects.create(gameSystem = gameSystem, name = name)
 
   def addAttrDefnToCharacter(self, dependencies = [], calcFunction = None, name = None, default = '', type = 'text', concept = None, character = None):
     definition = self.createAttrDefinition(calcFunction = calcFunction, name = name, type = type, default = default,
@@ -64,7 +65,7 @@ class TestHelpers(object):
       name = self.uniqStr()
 
     dataType = DataType.objects.get(name = type)
-    return ConceptAttributeDefinition.objects.create(concept=concept, name=name, dataType=dataType)
+    return ConceptAttribute.objects.create(concept=concept, name=name, dataType=dataType)
 
   def createConceptInstance(self, concept = None, name = None, attributes = {}):
     if concept is None:
@@ -74,23 +75,23 @@ class TestHelpers(object):
 
     instance = ConceptInstance.objects.create(concept = concept, name = name)
     for definition, value in attributes.items():
-      conceptAttribute = ConceptInstanceAttribute.objects.get(definition = definition, instance = instance)
+      conceptAttribute = ConceptAttributeValue.objects.get(definition = definition, instance = instance)
       conceptAttribute.raw_value = value
       conceptAttribute.save()
     return instance
 
   def assertCharacterAttributeHasRawValue(self, attr, expected):
-    if isinstance(attr, CharacterAttribute):
-      actual = CharacterAttribute.objects.get(pk = attr.id).raw_value
+    if isinstance(attr, CharacterAttributeValue):
+      actual = CharacterAttributeValue.objects.get(pk = attr.id).raw_value
     else:
-      actual = CharacterAttribute.objects.get(definition = attr, character = self.character).raw_value
+      actual = CharacterAttributeValue.objects.get(definition = attr, character = self.character).raw_value
     self.assertEqual(actual, unicode(expected))
 
   def getCharacterAttributeForDefinition(self, definition, character = None):
     if character is None:
       character = self.character
 
-    return CharacterAttribute.objects.get(definition = definition, character = character)
+    return CharacterAttributeValue.objects.get(definition = definition, character = character)
 
   def getCharacterAttributeValueByDefinition(self, definition, character = None):
     attribute = self.getCharacterAttributeForDefinition(definition, character)
@@ -101,5 +102,5 @@ class TestHelpers(object):
     return attribute.raw_value
 
   def assertCharacterHasAttributeForDefinition(self, definition):
-    CharacterAttribute.objects.get(character = self.character, definition = definition)
+    CharacterAttributeValue.objects.get(character = self.character, definition = definition)
 

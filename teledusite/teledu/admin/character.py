@@ -1,14 +1,14 @@
 from django import forms
 from django.contrib import admin
 from django.forms.widgets import TextInput
-from teledu.models import CharacterAttribute, Character
+from teledu.models import Character, CharacterAttributeValue
 
 class CharacterAttributeForm(forms.ModelForm):
   class Meta:
     widgets = {'raw_value': TextInput()}
 
-class CharacterAttributeInline(admin.StackedInline):
-  model = CharacterAttribute
+class CharacterAttributeValueInline(admin.StackedInline):
+  model = CharacterAttributeValue
   form = CharacterAttributeForm
   extra = 0
   can_delete = False
@@ -16,7 +16,7 @@ class CharacterAttributeInline(admin.StackedInline):
   readonly_fields = ['definition']
 
 class CharacterAdmin(admin.ModelAdmin):
-  inlines = [CharacterAttributeInline,]
+  inlines = [CharacterAttributeValueInline,]
   actions = ['recalculateCharacters', "applyCurrentCharacterAttributesToAllCharacters"]
 
   def recalculateCharacters(admin, request, querySet):

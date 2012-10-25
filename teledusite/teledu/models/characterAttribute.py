@@ -1,16 +1,53 @@
 from django.db import models
-from character import Character
-from characterAttributeDefinition import CharacterAttributeDefinition
-from lib import AttributeResolver
-from attributeValue import AttributeValue
+from gameSystem import GameSystem
+from attribute import Attribute
+from teledu.models.lib import AttributeDependentGraph, AttributeResolver
 
-class CharacterAttribute(AttributeValue):
-  character = models.ForeignKey(Character)
-  definition = models.ForeignKey(CharacterAttributeDefinition)
+class CharacterAttribute(Attribute):
+  gameSystem = models.ForeignKey(GameSystem, verbose_name = 'Game System', related_name = 'characterAttributes')
+  default = models.CharField(max_length = 50, blank = True, default = '')
+  calcFunction = models.TextField(null = True, blank = True, default = None, verbose_name = 'Calculation')
+  display = models.BooleanField(default = True)
 
   class Meta:
     app_label = 'teledu'
+    unique_together = (('gameSystem', 'name'))
 
   def __unicode__(self):
-    return '%s [%s] = [%s]' % (self.character.name, self.definition.name, self.raw_value)
+    return '%s - %s' % (self.gameSystem.name, self.name)
+
+  def getAttributesForInstance(self, instance):
+    from characterAttributeValue import CharacterAttributeValue
+    return CharacterAttributeValue.objects.filter(character = instance, definition = self)
+
+  def setAttributeValue(self, instance, newValue):
+    super(CharacterAttribute, self).setAttributeValue(instance, newValue)
+
+    attrGraph = AttributeDependentGraph(self)
+    changedAttributes = {self.id: self.getAttributeValue(instance)}
+
+    for dependentDefinition in attrGraph.items():
+      newValue = dependentDefinition.calculateNewValue(instance)
+      changedAttributes[dependentDefinition.id] = newValue
+
+    return changedAttributes
+
+  def calculateNewValue(self, character):
+    attributeValue = self.getAttributesForInstance(character)[0]
+    if self.calcFunction:
+      newValue = self._execCalcFunction(character)
+      attributeValue.raw_value = newValue
+      attributeValue.save()
+
+    return attributeValue.value
+
+  def _execCalcFunction(self, character):
+    scope = {
+      'attr': lambda name: AttributeResolver(character).getAttributeValue(name),
+      'result': None
+    }
+    exec self.calcFunction in scope
+    return scope['result']
+
+
 

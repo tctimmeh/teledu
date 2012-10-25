@@ -1,10 +1,10 @@
 from django.db import models
 from .lib import AttributeDependentGraph
-from characterAttributeDefinition import CharacterAttributeDefinition
+from characterAttribute import CharacterAttribute
 
 class Character(models.Model):
   name = models.CharField(max_length = 50)
-  attributes = models.ManyToManyField(CharacterAttributeDefinition, through = 'CharacterAttribute')
+  attributes = models.ManyToManyField(CharacterAttribute, through = 'CharacterAttributeValue')
 
   class Meta:
     app_label = 'teledu'
@@ -34,10 +34,10 @@ class Character(models.Model):
     return definition.setAttributeValue(self, value)
 
   def _getAttributeDefinition(self, attribute):
-    if isinstance(attribute, CharacterAttributeDefinition):
+    if isinstance(attribute, CharacterAttribute):
       return attribute
     elif isinstance(attribute, int):
-      return CharacterAttributeDefinition.objects.get(pk = attribute)
+      return CharacterAttribute.objects.get(pk = attribute)
     elif isinstance(attribute, str) or (isinstance(attribute, unicode)):
       return self.attributes.filter(name = attribute).distinct()[0]
 
@@ -50,7 +50,7 @@ class Character(models.Model):
     if gameSystem is None:
       gameSystem = self.gameSystem
 
-    for attributeDefinition in gameSystem.characterAttributeDefinitions.all():
+    for attributeDefinition in gameSystem.characterAttributes.all():
       attributes = attributeDefinition.getAttributesForInstance(self)
       if not attributes:
         self._createCharacterAttributeFromDefinition(attributeDefinition)
@@ -70,7 +70,7 @@ class Character(models.Model):
 
   def _createCharacterAttributeFromDefinition(self, attributeDefinition):
     initialValue = self._getInitialValueForForAttributeDefinition(attributeDefinition)
-    CharacterAttribute.objects.create(character = self, definition = attributeDefinition, raw_value = initialValue)
+    CharacterAttributeValue.objects.create(character = self, definition = attributeDefinition, raw_value = initialValue)
 
-from characterAttribute import CharacterAttribute
+from characterAttributeValue import CharacterAttributeValue
 

@@ -1,6 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponseNotFound
-from teledu.models import Character, CharacterAttribute
+from teledu.models import Character, CharacterAttributeValue
 from teledu.tests.teleduTestCase import TeleduTestCase
 
 class WhenDeletingCharacter(TeleduTestCase):
@@ -40,7 +39,7 @@ class WhenDeletingCharacter(TeleduTestCase):
 
   def testThatCharacterAttributesAreDeletedWhenCharacterIsDeleted(self):
     self.post({'confirm': True})
-    attributes = CharacterAttribute.objects.filter(character = self.character.id)
+    attributes = CharacterAttributeValue.objects.filter(character = self.character.id)
     self.assertEqual(len(attributes), 0)
 
   def testThatDeletingCharacterRedirectsToWelcomePage(self):

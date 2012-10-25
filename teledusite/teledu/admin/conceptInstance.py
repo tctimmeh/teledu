@@ -1,14 +1,14 @@
 from django import forms
 from django.contrib import admin
 from django.forms.widgets import TextInput
-from teledu.models import ConceptInstanceAttribute, ConceptInstance
+from teledu.models import ConceptAttributeValue, ConceptInstance
 
 class ConceptInstanceAdminForm(forms.ModelForm):
   class Meta:
     widgets = {'raw_value': TextInput()}
 
-class ConceptInstanceAttributeInline(admin.StackedInline):
-  model = ConceptInstanceAttribute
+class ConceptAttributeValueInline(admin.StackedInline):
+  model = ConceptAttributeValue
   form = ConceptInstanceAdminForm
   extra = 0
   can_delete = False
@@ -21,7 +21,7 @@ class ConceptInstanceAdmin(admin.ModelAdmin):
   list_display = ['gameSystem', 'conceptName', 'name']
   list_display_links = ['name']
   list_filter = ['concept__gameSystem__name', 'concept__name']
-  inlines = [ConceptInstanceAttributeInline,]
+  inlines = [ConceptAttributeValueInline,]
 
 admin.site.register(ConceptInstance, ConceptInstanceAdmin)
 

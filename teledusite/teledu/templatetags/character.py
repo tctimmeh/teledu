@@ -1,5 +1,5 @@
 from django import template
-from ..models import CharacterAttributeDefinition, DataType
+from ..models import CharacterAttribute, DataType
 
 register = template.Library()
 
@@ -23,7 +23,7 @@ def createAttributeElement(context, attributeDefinition):
   value = character.getAttributeValue(attributeDefinition)
 
   if isinstance(attributeDefinition, str) or isinstance(attributeDefinition, unicode):
-    attributeDefinition = CharacterAttributeDefinition.objects.get(gameSystem = character.gameSystem, name = attributeDefinition)
+    attributeDefinition = CharacterAttribute.objects.get(gameSystem = character.gameSystem, name = attributeDefinition)
 
   if attributeDefinition.list:
     return _createListAttributeElement(attributeDefinition, value)

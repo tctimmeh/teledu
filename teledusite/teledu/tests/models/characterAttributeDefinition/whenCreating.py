@@ -1,10 +1,10 @@
-from teledu.models import CharacterAttributeDefinition
+from teledu.models import CharacterAttribute
 from teledu.tests.teleduTestCase import TeleduTestCase
 
-class WhenCreatingCharacterAttributeDefinition(TeleduTestCase):
+class WhenCreating(TeleduTestCase):
   def setUp(self):
-    super(WhenCreatingCharacterAttributeDefinition, self).setUp()
-    self.definition = CharacterAttributeDefinition.objects.create(gameSystem = self.gameSystem, name = self.uniqStr())
+    super(WhenCreating, self).setUp()
+    self.definition = CharacterAttribute.objects.create(gameSystem = self.gameSystem, name = self.uniqStr())
 
   def testDefaultDisplayValueIsTrue(self):
     self.assertTrue(self.definition.display)

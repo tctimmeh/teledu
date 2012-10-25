@@ -1,12 +1,12 @@
 from django.contrib import admin
-from teledu.models import CharacterAttributeDependency, CharacterAttributeDefinition
+from teledu.models import CharacterAttributeDependency, CharacterAttribute
 
 class CharacterAttributeDependencyInline(admin.StackedInline):
   model = CharacterAttributeDependency
   fk_name = 'attribute'
   extra = 0
 
-class CharacterAttributeDefinitionAdmin(admin.ModelAdmin):
+class CharacterAttributeAdmin(admin.ModelAdmin):
   search_fields = ['name']
   ordering = ['gameSystem__name', 'name']
   list_display = ['gameSystem', 'name', 'dataType', 'default']
@@ -15,5 +15,5 @@ class CharacterAttributeDefinitionAdmin(admin.ModelAdmin):
   list_editable = ['dataType', 'default']
   inlines = [CharacterAttributeDependencyInline,]
 
-admin.site.register(CharacterAttributeDefinition, CharacterAttributeDefinitionAdmin)
+admin.site.register(CharacterAttribute, CharacterAttributeAdmin)
 

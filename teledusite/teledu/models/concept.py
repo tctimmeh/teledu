@@ -1,7 +1,7 @@
 from django.db import models
 from gameSystem import GameSystem
 
-class GameSystemConcept(models.Model):
+class Concept(models.Model):
   gameSystem = models.ForeignKey(GameSystem, verbose_name = 'Game System')
   name = models.CharField(max_length = 30)
 

@@ -1,10 +1,10 @@
 from django.db import models
-from conceptAttributeDefinition import ConceptAttributeDefinition
+from conceptAttribute import ConceptAttribute
 from conceptInstance import ConceptInstance
 from teledu.models.attributeValue import AttributeValue
 
-class ConceptInstanceAttribute(AttributeValue):
-  definition = models.ForeignKey(ConceptAttributeDefinition)
+class ConceptAttributeValue(AttributeValue):
+  definition = models.ForeignKey(ConceptAttribute)
   instance = models.ForeignKey(ConceptInstance)
 
   class Meta:

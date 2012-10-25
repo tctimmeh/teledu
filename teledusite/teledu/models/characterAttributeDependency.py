@@ -1,9 +1,9 @@
 from django.db import models
-from characterAttributeDefinition import CharacterAttributeDefinition
+from characterAttribute import CharacterAttribute
 
 class CharacterAttributeDependency(models.Model):
-  attribute = models.ForeignKey(CharacterAttributeDefinition, related_name = 'dependencies')
-  dependency = models.ForeignKey(CharacterAttributeDefinition, related_name = 'dependents')
+  attribute = models.ForeignKey(CharacterAttribute, related_name = 'dependencies')
+  dependency = models.ForeignKey(CharacterAttribute, related_name = 'dependents')
 
   class Meta:
     app_label = 'teledu'

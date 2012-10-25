@@ -1,5 +1,3 @@
-from django.core.exceptions import ObjectDoesNotExist
-from teledu.models import CharacterAttribute, ConceptInstance
 from teledu.tests.teleduTestCase import TeleduTestCase
 
 class WhenAddingMissingAttributes(TeleduTestCase):

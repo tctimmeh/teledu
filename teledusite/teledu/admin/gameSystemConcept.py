@@ -1,5 +1,5 @@
 from django.contrib import admin
-from teledu.models import GameSystemConcept
+from teledu.models import Concept
 
 class GameSystemConceptAdmin(admin.ModelAdmin):
   search_fields = ['name']
@@ -8,5 +8,5 @@ class GameSystemConceptAdmin(admin.ModelAdmin):
   list_display_links = ['name']
   list_filter = ['gameSystem']
 
-admin.site.register(GameSystemConcept, GameSystemConceptAdmin)
+admin.site.register(Concept, GameSystemConceptAdmin)
 

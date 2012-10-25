@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext, Template
 from django.template.loader import get_template
-from models import Character, CharacterSheet, GameSystem, CharacterAttributeDefinition, ConceptInstance, CharacterAttribute, DataType
+from models import Character, CharacterSheet, GameSystem, CharacterAttribute, ConceptInstance, CharacterAttributeValue, DataType
 
 def welcome(request):
   return render(request, 'welcome.html', {'characters': Character.objects.all()})
@@ -41,7 +41,7 @@ def charSheet(request, charId, json):
 
 def setCharacterAttribute(request, charId, attrId):
   character = get_object_or_404(Character, id = charId)
-  attribute = get_object_or_404(CharacterAttributeDefinition, id = attrId)
+  attribute = get_object_or_404(CharacterAttribute, id = attrId)
 
   value = request.POST['value']
   changedAttributes = character.setAttributeValue(attribute, value)
@@ -77,7 +77,7 @@ def getCharacterAttributeChoices(request, charId, attrId):
   character = get_object_or_404(Character, id = charId)
   try:
     definition = character.attributes.get(id = attrId)
-  except CharacterAttributeDefinition.DoesNotExist:
+  except CharacterAttribute.DoesNotExist:
     raise Http404()
 
   if definition.dataType.id != DataType.CONCEPT:
@@ -87,7 +87,7 @@ def getCharacterAttributeChoices(request, charId, attrId):
   out = {}
   for instance in conceptInstances:
     out[instance.id] = instance.name
-  out['selected'] = CharacterAttribute.objects.get(character = character, definition = definition).raw_value
+  out['selected'] = CharacterAttributeValue.objects.get(character = character, definition = definition).raw_value
 
   return HttpResponse(json.dumps(out))
 

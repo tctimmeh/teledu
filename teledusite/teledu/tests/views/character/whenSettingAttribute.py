@@ -1,6 +1,5 @@
 import json
-import random
-from teledu.models import CharacterAttribute
+from teledu.models import  CharacterAttributeValue
 from teledu.tests.teleduTestCase import TeleduTestCase
 
 class WhenSettingAttribute(TeleduTestCase):
@@ -33,7 +32,7 @@ class WhenSettingAttribute(TeleduTestCase):
     self.assertEqual(self.response.status_code, 404)
 
   def testThatAttributeGetsNewValue(self):
-    actual = CharacterAttribute.objects.get(pk = self.charAttr.id).raw_value
+    actual = CharacterAttributeValue.objects.get(pk = self.charAttr.id).raw_value
     self.assertEqual(actual, self.newValue)
 
   def testThatResponseContainsJsonObjectOfEveryChangedAttribute(self):

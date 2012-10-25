@@ -2,13 +2,13 @@ from gameSystem import GameSystem
 
 from dataType import DataType
 
-from gameSystemConcept import GameSystemConcept
+from concept import Concept
 from character import Character
+from characterAttributeValue import CharacterAttributeValue
 from characterAttribute import CharacterAttribute
-from characterAttributeDefinition import CharacterAttributeDefinition
 from characterSheet import CharacterSheet
 from characterAttributeDependency import CharacterAttributeDependency
 
-from conceptAttributeDefinition import ConceptAttributeDefinition
+from conceptAttribute import ConceptAttribute
 from conceptInstance import ConceptInstance
-from conceptInstanceAttribute import ConceptInstanceAttribute
+from conceptAttributeValue import ConceptAttributeValue

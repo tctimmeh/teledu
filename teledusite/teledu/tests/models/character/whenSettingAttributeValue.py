@@ -1,10 +1,10 @@
 import random
 from teledu.tests.teleduTestCase import TeleduTestCase
-from teledu.models import CharacterAttribute
+from teledu.models import CharacterAttributeValue
 
 class WhenSettingCharacterAttributeValue(TeleduTestCase):
   def getAttrValue(self, attrDefn):
-    return int(CharacterAttribute.objects.get(character = self.character, definition = attrDefn).raw_value)
+    return int(CharacterAttributeValue.objects.get(character = self.character, definition = attrDefn).raw_value)
     
   def testThatAttributeHasNewValue(self):
     attrA = self.addAttrDefnToCharacter()
@@ -24,7 +24,7 @@ class WhenSettingCharacterAttributeValue(TeleduTestCase):
     self.character.setAttributeValue(attrA, expected)
     expected += 1
 
-    actual = int(CharacterAttribute.objects.get(character = self.character, definition = attrB).raw_value)
+    actual = int(CharacterAttributeValue.objects.get(character = self.character, definition = attrB).raw_value)
     self.assertEqual(actual, expected)
 
   def testThatIndirectDependentsCalculateNewValues(self):
@@ -37,7 +37,7 @@ class WhenSettingCharacterAttributeValue(TeleduTestCase):
     self.character.setAttributeValue(attrA, expected)
     expected += 2
 
-    actual = int(CharacterAttribute.objects.get(character = self.character, definition = attrC).raw_value)
+    actual = int(CharacterAttributeValue.objects.get(character = self.character, definition = attrC).raw_value)
     self.assertEqual(actual, expected)
 
   def testThatDiamondDependentsCalculateNewValues(self):
@@ -55,7 +55,7 @@ class WhenSettingCharacterAttributeValue(TeleduTestCase):
     self.character.setAttributeValue(attrA, setValue)
     expected = (setValue + 1) * (setValue + 2)
 
-    actual = int(CharacterAttribute.objects.get(character = self.character, definition = attrD).raw_value)
+    actual = int(CharacterAttributeValue.objects.get(character = self.character, definition = attrD).raw_value)
     self.assertEqual(actual, expected)
 
   def testThatGrandchildDependentsCalculateNewValues(self):
@@ -70,6 +70,6 @@ class WhenSettingCharacterAttributeValue(TeleduTestCase):
     self.character.setAttributeValue(attrA, setValue)
     expected = (setValue) * (setValue + 1)
 
-    actual = int(CharacterAttribute.objects.get(character = self.character, definition = attrC).raw_value)
+    actual = int(CharacterAttributeValue.objects.get(character = self.character, definition = attrC).raw_value)
     self.assertEqual(actual, expected)
 

@@ -1,13 +1,13 @@
 from django.db import models
-from conceptAttributeDefinition import ConceptAttributeDefinition
+from conceptAttribute import ConceptAttribute
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from gameSystemConcept import GameSystemConcept
+from concept import Concept
 
 class ConceptInstance(models.Model):
   name = models.CharField(max_length = 50)
-  concept = models.ForeignKey(GameSystemConcept)
-  attributes = models.ManyToManyField(ConceptAttributeDefinition, through = 'ConceptInstanceAttribute')
+  concept = models.ForeignKey(Concept)
+  attributes = models.ManyToManyField(ConceptAttribute, through = 'ConceptAttributeValue')
 
   class Meta:
     app_label = 'teledu'
@@ -31,8 +31,8 @@ def createConceptInstanceAttributes(sender, **kwargs):
   if raw or not created:
     return
 
-  from conceptInstanceAttribute import ConceptInstanceAttribute
+  from conceptAttributeValue import ConceptAttributeValue
   definitions = instance.concept.attributeDefinitions.all()
   for definition in definitions:
-    ConceptInstanceAttribute.objects.create(instance = instance, definition = definition)
+    ConceptAttributeValue.objects.create(instance = instance, definition = definition)
 

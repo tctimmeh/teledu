@@ -1,9 +1,9 @@
 from django.db import models
-from gameSystemConcept import  GameSystemConcept
-from teledu.models.attributeDefinition import AttributeDefinition
+from concept import Concept
+from attribute import Attribute
 
-class ConceptAttributeDefinition(AttributeDefinition):
-  concept = models.ForeignKey(GameSystemConcept, related_name = 'attributeDefinitions')
+class ConceptAttribute(Attribute):
+  concept = models.ForeignKey(Concept, related_name = 'attributeDefinitions')
 
   class Meta:
     app_label = 'teledu'

@@ -1,4 +1,4 @@
-from teledu.models import CharacterAttribute
+from teledu.models import CharacterAttributeValue
 from teledu.tests.teleduTestCase import TeleduTestCase
 
 class WhenRecalculatingAttributes(TeleduTestCase):
@@ -8,7 +8,7 @@ class WhenRecalculatingAttributes(TeleduTestCase):
     attr2 = self.addAttrDefnToCharacter(dependencies=[attr], calcFunction='result = "%s"' % expected)
 
     self.character.recalculateAllAttributes()
-    actual = CharacterAttribute.objects.get(character = self.character, definition = attr).value
+    actual = CharacterAttributeValue.objects.get(character = self.character, definition = attr).value
     self.assertEqual(actual, expected)
-    actual = CharacterAttribute.objects.get(character = self.character, definition = attr2).value
+    actual = CharacterAttributeValue.objects.get(character = self.character, definition = attr2).value
     self.assertEqual(actual, expected)
