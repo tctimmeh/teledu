@@ -26,14 +26,14 @@ class Character(models.Model):
     return newCharacter
 
   def getAttributeValue(self, attribute):
-    attribute = self._getAttribute(attribute)
+    attribute = self.getAttribute(attribute)
     return attribute.getValue(self)
 
   def setAttributeValue(self, attribute, value):
-    attribute = self._getAttribute(attribute)
+    attribute = self.getAttribute(attribute)
     return attribute.setValue(self, value)
 
-  def _getAttribute(self, attribute):
+  def getAttribute(self, attribute):
     if isinstance(attribute, CharacterAttribute):
       return attribute
     elif isinstance(attribute, int):

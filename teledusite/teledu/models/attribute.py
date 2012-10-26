@@ -10,6 +10,9 @@ class Attribute(models.Model):
   class Meta:
     abstract = True
 
+  def isConcept(self):
+    return self.dataType.isConcept()
+
   def getValue(self, instance):
     attributes = self.getAttributesForInstance(instance)
 

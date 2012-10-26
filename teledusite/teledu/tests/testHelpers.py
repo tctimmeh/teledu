@@ -10,7 +10,7 @@ class TestHelpers(object):
   def uniqStr(self, size = None):
     if size is None:
       size = random.randint(7,15)
-    return ''.join(random.choice(string.ascii_letters + string.digits) for x in range(size))
+    return random.choice(string.ascii_letters) + ''.join(random.choice(string.ascii_letters + string.digits) for x in range(size))
 
   def createGameSystem(self):
     return GameSystem.objects.create(name = self.uniqStr())
