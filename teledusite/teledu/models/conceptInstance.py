@@ -16,6 +16,19 @@ class ConceptInstance(models.Model):
   def __unicode__(self):
     return '%s - %s - %s' % (self.concept.gameSystem.name, self.concept.name, self.name)
 
+  def _getAttribute(self, attribute):
+    if isinstance(attribute, ConceptAttribute):
+      pass
+    elif isinstance(attribute, int):
+      attribute = ConceptAttribute.objects.get(pk = attribute)
+    elif isinstance(attribute, str) or isinstance(attribute, unicode):
+      attribute = ConceptAttribute.objects.get(concept = self.concept, name = attribute)
+    return attribute
+
+  def getAttributeValue(self, attribute):
+    attribute = self._getAttribute(attribute)
+    return attribute.getAttributeValue(self)
+
   def gameSystem(self):
     return self.concept.gameSystem
 

@@ -58,14 +58,14 @@ class TestHelpers(object):
     self.createAttributeValueForCharacter(attribute = attribute, character = character)
     return attribute
 
-  def createConceptAttr(self, concept = None, name = None, type = 'integer'):
+  def createConceptAttr(self, concept = None, name = None, type = 'text', valueConcept = None, list = False):
     if concept is None:
       concept = self.concept
     if name is None:
       name = self.uniqStr()
 
     dataType = DataType.objects.get(name = type)
-    return ConceptAttribute.objects.create(concept=concept, name=name, dataType=dataType)
+    return ConceptAttribute.objects.create(concept=concept, name=name, dataType=dataType, valueConcept = valueConcept, list = list)
 
   def createConceptInstance(self, concept = None, name = None, attributes = {}):
     if concept is None:
