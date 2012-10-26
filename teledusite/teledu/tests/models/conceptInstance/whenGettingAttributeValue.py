@@ -1,3 +1,4 @@
+from teledu.models import ConceptAttributeValue
 from teledu.tests.teleduTestCase import TeleduTestCase
 
 class WhenGettingAttributeValue(TeleduTestCase):
@@ -28,3 +29,17 @@ class WhenGettingAttributeValue(TeleduTestCase):
 
     actual = instance.getAttributeValue(attribute)
     self.assertEqual(actual, expectedInstance.name)
+
+  def testGettingListAttributesReturnsAllAttributeValues(self):
+    concept = self.createConcept()
+    attribute = self.createConceptAttr(concept = concept, list = True)
+    instance = self.createConceptInstance(concept = concept)
+
+    expected = [self.uniqStr(), self.uniqStr()]
+    expected.sort()
+    for value in expected:
+      ConceptAttributeValue.objects.create(attribute = attribute, instance = instance, raw_value = value)
+
+    actual = instance.getAttributeValue(attribute)
+    actual.sort()
+    self.assertEqual(actual, expected)

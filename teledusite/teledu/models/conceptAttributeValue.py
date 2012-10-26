@@ -9,7 +9,6 @@ class ConceptAttributeValue(AttributeValue):
 
   class Meta:
     app_label = 'teledu'
-    unique_together = (('attribute', 'instance'))
 
   def __unicode__(self):
     return '%s [%s] = [%s]' % (self.instance.name, self.attribute.name, self.raw_value)

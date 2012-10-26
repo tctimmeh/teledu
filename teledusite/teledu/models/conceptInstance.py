@@ -47,5 +47,7 @@ def createConceptInstanceAttributes(sender, **kwargs):
   from conceptAttributeValue import ConceptAttributeValue
   attributes = instance.concept.attributes.all()
   for attribute in attributes:
+    if attribute.list:
+      continue
     ConceptAttributeValue.objects.create(instance = instance, attribute = attribute)
 
