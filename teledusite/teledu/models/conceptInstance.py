@@ -27,7 +27,7 @@ class ConceptInstance(models.Model):
 
   def getAttributeValue(self, attribute):
     attribute = self._getAttribute(attribute)
-    return attribute.getAttributeValue(self)
+    return attribute.getValue(self)
 
   def gameSystem(self):
     return self.concept.gameSystem

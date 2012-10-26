@@ -27,11 +27,11 @@ class Character(models.Model):
 
   def getAttributeValue(self, attribute):
     attribute = self._getAttribute(attribute)
-    return attribute.getAttributeValue(self)
+    return attribute.getValue(self)
 
   def setAttributeValue(self, attribute, value):
     attribute = self._getAttribute(attribute)
-    return attribute.setAttributeValue(self, value)
+    return attribute.setValue(self, value)
 
   def _getAttribute(self, attribute):
     if isinstance(attribute, CharacterAttribute):

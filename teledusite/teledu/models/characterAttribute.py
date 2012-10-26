@@ -20,11 +20,11 @@ class CharacterAttribute(Attribute):
     from characterAttributeValue import CharacterAttributeValue
     return CharacterAttributeValue.objects.filter(character = instance, attribute = self)
 
-  def setAttributeValue(self, instance, newValue):
-    super(CharacterAttribute, self).setAttributeValue(instance, newValue)
+  def setValue(self, instance, newValue):
+    super(CharacterAttribute, self).setValue(instance, newValue)
 
     attrGraph = AttributeDependentGraph(self)
-    changedAttributes = {self.id: self.getAttributeValue(instance)}
+    changedAttributes = {self.id: self.getValue(instance)}
 
     for dependentAttribute in attrGraph.items():
       newValue = dependentAttribute.calculateNewValue(instance)

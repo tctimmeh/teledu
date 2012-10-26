@@ -10,7 +10,7 @@ class Attribute(models.Model):
   class Meta:
     abstract = True
 
-  def getAttributeValue(self, instance):
+  def getValue(self, instance):
     attributes = self.getAttributesForInstance(instance)
 
     if not self.list:
@@ -21,7 +21,7 @@ class Attribute(models.Model):
         out.append(attribute.value)
     return out
 
-  def setAttributeValue(self, instance, newValue):
+  def setValue(self, instance, newValue):
     attribute = self.getAttributesForInstance(instance)[0]
     attribute.raw_value = newValue
     attribute.save()
