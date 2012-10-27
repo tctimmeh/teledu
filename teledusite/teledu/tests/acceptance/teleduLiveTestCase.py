@@ -33,7 +33,7 @@ class TeleduLiveTestCase(LiveServerTestCase, TestHelpers):
     self.conceptCharAttr = self.createAttribute(type = 'concept', concept = self.concept)
     self.conceptCharAttrValue = self.createAttributeValueForCharacter(self.conceptCharAttr, initialValue = self.conceptInstance.id)
 
-    self.dependentCharAttr = self.createAttribute(calcFunction = "result = attr('%s')" % self.charAttr.name,
+    self.dependentCharAttr = self.createAttribute(calcFunction = "result = character.%s" % self.charAttr.name,
       dependencies = [self.charAttr])
     self.dependentCharAttrValue = self.createAttributeValueForCharacter(self.dependentCharAttr)
 

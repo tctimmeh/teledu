@@ -1,19 +1,26 @@
-
 class AttributeResolver(object):
-  def __init__(self, character):
-    self.character = character
+  def __init__(self, modelObject):
+    self.modelObject = modelObject
 
-  def getAttributeValue(self, expression):
-    from teledu.models import CharacterAttribute, CharacterAttributeValue, ConceptInstance, ConceptAttribute, ConceptAttributeValue
+  def __unicode__(self):
+    return unicode(self.modelObject.id)
 
-    parts = expression.split('.')
-    if len(parts) < 2:
-      return self.character.getAttributeValue(expression)
+  def __getattribute__(self, item):
+    if item in ['modelObject', '_getConceptAttributeValue', '_getConceptInstance']:
+      return super(AttributeResolver, self).__getattribute__(item)
+    attribute = self.modelObject.getAttribute(item)
+    if attribute.isConcept():
+      return self._getConceptAttributeValue(attribute)
+    return attribute.getValue(self.modelObject)
 
-    attribute = CharacterAttribute.objects.get(gameSystem = self.character.gameSystem, name = parts[0])
-    attributeValue = CharacterAttributeValue.objects.get(attribute = attribute, character = self.character)
+  def _getConceptAttributeValue(self, attribute):
+    attributeValues = attribute.getAttributesForInstance(self.modelObject)
+    if attribute.list:
+      return [self._getConceptInstance(attributeValue) for attributeValue in attributeValues]
+    return self._getConceptInstance(attributeValues[0])
+
+  def _getConceptInstance(self, attributeValue):
+    from teledu.models import ConceptInstance
     conceptInstance = ConceptInstance.objects.get(pk = attributeValue.raw_value)
-    conceptAttribute = ConceptAttribute.objects.get(concept = attribute.valueConcept, name = parts[1])
-    conceptAttributeValue = ConceptAttributeValue.objects.get(attribute = conceptAttribute, instance = conceptInstance)
+    return AttributeResolver(conceptInstance)
 
-    return conceptAttributeValue.raw_value

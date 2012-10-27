@@ -36,32 +36,16 @@ class CharacterAttribute(Attribute):
     attributeValue = self.getAttributesForInstance(character)[0]
     if self.calcFunction:
       newValue = self._execCalcFunction(character)
-      attributeValue.raw_value = newValue
+      attributeValue.raw_value = unicode(newValue)
       attributeValue.save()
 
     return attributeValue.value
 
   def _execCalcFunction(self, character):
     scope = {
-      'attr': lambda name: AttributeResolver(character).getAttributeValue(name),
-      'character': AttributeResolver2(character),
+      'character': AttributeResolver(character),
       'result': None
     }
     exec self.calcFunction in scope
     return scope['result']
-
-
-class AttributeResolver2(object):
-  def __init__(self, modelObject):
-    self.modelObject = modelObject
-
-  def __getattribute__(self, item):
-    from teledu.models import CharacterAttributeValue
-    if item in ['modelObject']:
-      return super(AttributeResolver2, self).__getattribute__(item)
-    attribute = self.modelObject.getAttribute(item)
-    if attribute.isConcept():
-      attributeValue = CharacterAttributeValue.objects.get(attribute = attribute, character = self.modelObject)
-      return attributeValue.raw_value
-    return attribute.getValue(self.modelObject)
 
