@@ -1,7 +1,8 @@
 from django.db import models
 from gameSystem import GameSystem
 from attribute import Attribute
-from teledu.models.lib import AttributeDependentGraph, AttributeResolver
+from teledu.models.lib import AttributeDependentGraph
+from teledu.models.lib import CalculationFunction
 
 class CharacterAttribute(Attribute):
   gameSystem = models.ForeignKey(GameSystem, verbose_name = 'Game System', related_name = 'characterAttributes')
@@ -33,19 +34,6 @@ class CharacterAttribute(Attribute):
     return changedAttributes
 
   def calculateNewValue(self, character):
-    attributeValue = self.getAttributesForInstance(character)[0]
-    if self.calcFunction:
-      newValue = self._execCalcFunction(character)
-      attributeValue.raw_value = unicode(newValue)
-      attributeValue.save()
-
-    return attributeValue.value
-
-  def _execCalcFunction(self, character):
-    scope = {
-      'character': AttributeResolver(character),
-      'result': None
-    }
-    exec self.calcFunction in scope
-    return scope['result']
-
+    function = CalculationFunction(self.calcFunction, self, character)
+    function.execute()
+    return function.result

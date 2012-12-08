@@ -60,3 +60,6 @@ class WhenGettingCharacterAttribute(TeleduTestCase):
       "result = character.%s[1].%s" % (attribute.name, conceptAttr.name),
       expected, type = 'text')
 
+  def testReturningListOfValuesSetsListAttribute(self):
+    expected = [self.uniqStr(), self.uniqStr(), self.uniqStr()]
+    self._assertCalcFunctionProducesResult(self.charAttr, "result = %s" % expected, expected)
