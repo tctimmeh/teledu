@@ -17,6 +17,7 @@ atexit.register(stopDriver)
 
 class TeleduLiveTestCase(LiveServerTestCase, TestHelpers):
   urls = 'teledu.urls'
+  fixtures = ['initial_data']
 
   def setUp(self):
     self.gameSystem = self.createGameSystem()
@@ -41,6 +42,8 @@ class TeleduLiveTestCase(LiveServerTestCase, TestHelpers):
   def setUpClass(cls):
     super(TeleduLiveTestCase, cls).setUpClass()
     global driver
+    if driver is None:
+      setUpModule()
     cls.driver = driver
 
   def url(self, path = ''):

@@ -1,7 +1,7 @@
 from selenium.webdriver.support.select import Select
 from selenium.common.exceptions import NoSuchElementException
 from teledu.models import CharacterAttributeValue
-from teleduLiveTestCase import TeleduLiveTestCase
+from teleduLiveTestCase import TeleduLiveTestCase, setUpModule
 from selenium.webdriver.support.ui import WebDriverWait
 
 class TestCharacterSheet(TeleduLiveTestCase):

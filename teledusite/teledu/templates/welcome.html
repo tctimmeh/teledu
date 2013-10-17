@@ -4,14 +4,14 @@
 
 {% block body %}
   <p>
-    <a href="{% url teledu.views.createCharacter %}">Create a Character!</a>
+    <a href="{% url "teledu.views.createCharacter" %}">Create a Character!</a>
   </p>
   <p>
     <h3>Characters</h3>
     <ul>
       {% for character in characters %}
         <li>
-          <a href="{% url teledu.views.charSheet charId=character.id %}">{{ character.name }}</a>
+          <a href="{% url "teledu.views.charSheet" charId=character.id %}">{{ character.name }}</a>
         </li>
       {% endfor %}
     </ul>

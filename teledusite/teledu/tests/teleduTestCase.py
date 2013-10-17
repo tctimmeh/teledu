@@ -6,6 +6,7 @@ random.seed(0x5ADB0075)
 
 class TeleduTestCase(TestCase, TestHelpers):
   urls = 'teledu.urls'
+  fixtures = ['initial_data']
 
   def setUp(self):
     self.gameSystem = self.createGameSystem()

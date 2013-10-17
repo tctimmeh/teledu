@@ -14,8 +14,8 @@
 
 {% block body %}
   <div id="charSheetToolbar">
-    <a href="{% url teledu.views.welcome %}">Home</a>
-    <a href="{% url teledu.views.deleteCharacter character.id %}">Delete</a>
+    <a href="{% url "teledu.views.welcome" %}">Home</a>
+    <a href="{% url "teledu.views.deleteCharacter" character.id %}">Delete</a>
   </div>
   {% block characterSheet %}{% endblock %}
 {% endblock %}
