@@ -18,7 +18,7 @@ class ConceptAttribute(Attribute):
   def gameSystem(self):
     return self.concept.gameSystem
 
-  def getAttributesForInstance(self, instance):
+  def getAttributeValuesForInstance(self, instance):
     from conceptAttributeValue import ConceptAttributeValue
     return ConceptAttributeValue.objects.filter(attribute = self, instance = instance)
 

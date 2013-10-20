@@ -8,13 +8,14 @@ class CalculationFunction(object):
     self.result = None
 
   def execute(self):
-    attributeValue = self.attribute.getAttributesForInstance(self.operand)[0]
     if self.definition:
       newValue = self._execCalcFunction()
-      attributeValue.raw_value = unicode(newValue)
-      attributeValue.save()
+      self.attribute.setRawValue(self.operand, newValue)
+      #attributeValue = self.attribute.getAttributeValuesForInstance(self.operand)[0]
+      #attributeValue.raw_value = unicode(newValue)
+      #attributeValue.save()
 
-    self.result = attributeValue.value
+    self.result = self.attribute.getValue(self.operand)
 
   def _execCalcFunction(self):
     scope = {

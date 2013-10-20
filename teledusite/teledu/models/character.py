@@ -51,7 +51,7 @@ class Character(models.Model):
       gameSystem = self.gameSystem
 
     for attribute in gameSystem.characterAttributes.all():
-      attributes = attribute.getAttributesForInstance(self)
+      attributes = attribute.getAttributeValuesForInstance(self)
       if not attributes:
         self._createAttributeValue(attribute)
 

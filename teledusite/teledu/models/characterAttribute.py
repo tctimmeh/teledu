@@ -17,7 +17,7 @@ class CharacterAttribute(Attribute):
   def __unicode__(self):
     return '%s - %s' % (self.gameSystem.name, self.name)
 
-  def getAttributesForInstance(self, instance):
+  def getAttributeValuesForInstance(self, instance):
     from characterAttributeValue import CharacterAttributeValue
     return CharacterAttributeValue.objects.filter(character = instance, attribute = self)
 
@@ -37,3 +37,12 @@ class CharacterAttribute(Attribute):
     function = CalculationFunction(self.calcFunction, self, character)
     function.execute()
     return function.result
+
+  def _deleteAttributeValues(self, instance):
+    from characterAttributeValue import CharacterAttributeValue
+    CharacterAttributeValue.objects.filter(character = instance, attribute = self).delete()
+
+  def _addAttributeValue(self, instance, rawValue):
+    from characterAttributeValue import CharacterAttributeValue
+    CharacterAttributeValue.objects.create(character = instance, attribute = self, raw_value = rawValue)
+

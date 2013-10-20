@@ -1,15 +1,20 @@
 from teledu.tests.teleduTestCase import TeleduTestCase
 
 class WhenGettingCharacterAttribute(TeleduTestCase):
-  def _createDependentAttribute(self, sourceAttribute, calcFunction, type = None):
+  def _createDependentAttribute(self, sourceAttribute, calcFunction, type = None, list = False):
     if type is None:
       type = sourceAttribute.dataType
 
     return self.addAttributeToCharacter(type = type, dependencies=[sourceAttribute],
-      concept = sourceAttribute.valueConcept, calcFunction = calcFunction % {'sourceName': sourceAttribute.name})
+      concept = sourceAttribute.valueConcept, calcFunction = calcFunction % {'sourceName': sourceAttribute.name},
+      list = list)
 
   def _assertCalcFunctionProducesResult(self, sourceAttribute, calcFunction, expected, type = None):
-    attribute = self._createDependentAttribute(sourceAttribute, calcFunction, type = type)
+    isList = False
+    if isinstance(expected, list):
+      isList = True
+
+    attribute = self._createDependentAttribute(sourceAttribute, calcFunction, type = type, list = isList)
     attribute.calculateNewValue(self.character)
     actual = self.getCharacterAttributeValue(attribute)
     self.assertEqual(actual, expected)
@@ -61,5 +66,6 @@ class WhenGettingCharacterAttribute(TeleduTestCase):
       expected, type = 'text')
 
   def testReturningListOfValuesSetsListAttribute(self):
+    attribute = self.createAttribute(list = True)
     expected = [self.uniqStr(), self.uniqStr(), self.uniqStr()]
-    self._assertCalcFunctionProducesResult(self.charAttr, "result = %s" % expected, expected)
+    self._assertCalcFunctionProducesResult(attribute, "result = %s" % expected, expected)

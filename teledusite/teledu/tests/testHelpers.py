@@ -52,9 +52,10 @@ class TestHelpers(object):
       name = self.uniqStr()
     return Concept.objects.create(gameSystem = gameSystem, name = name)
 
-  def addAttributeToCharacter(self, dependencies = [], calcFunction = None, name = None, default = '', type = 'text', concept = None, character = None):
+  def addAttributeToCharacter(self, dependencies = [], calcFunction = None, name = None, default = '', type = 'text',
+                              concept = None, character = None, list = False):
     attribute = self.createAttribute(calcFunction = calcFunction, name = name, type = type, default = default,
-      concept = concept, dependencies = dependencies)
+      concept = concept, dependencies = dependencies, list = list)
     self.createAttributeValueForCharacter(attribute = attribute, character = character)
     return attribute
 
@@ -94,8 +95,9 @@ class TestHelpers(object):
     return CharacterAttributeValue.objects.get(attribute = attribute, character = character)
 
   def getCharacterAttributeValue(self, attribute, character = None):
-    attribute = self.getCharacterAttributeValueObject(attribute, character)
-    return attribute.value
+    if character is None:
+      character = self.character
+    return attribute.getValue(character)
 
   def getCharacterAttributeRawValue(self, attribute, character = None):
     attribute = self.getCharacterAttributeValueObject(attribute, character)

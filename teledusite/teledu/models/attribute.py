@@ -14,7 +14,7 @@ class Attribute(models.Model):
     return self.dataType.isConcept()
 
   def getValue(self, instance):
-    attributes = self.getAttributesForInstance(instance)
+    attributes = self.getAttributeValuesForInstance(instance)
 
     if not self.list:
       out = attributes[0].value
@@ -25,10 +25,25 @@ class Attribute(models.Model):
     return out
 
   def setValue(self, instance, newValue):
-    attribute = self.getAttributesForInstance(instance)[0]
-    attribute.raw_value = newValue
-    attribute.save()
+    self._deleteAttributeValues(instance)
+    if isinstance(newValue, (list, tuple, set)):
+      self._addAttributeValues(instance, newValue)
+    else:
+      self._addAttributeValue(instance, unicode(newValue))
 
-  def getAttributesForInstance(self, instance):
+  def setRawValue(self, instance, newValue):
+    Attribute.setValue(self, instance, newValue)
+
+  def _addAttributeValues(self, instance, rawValues):
+    for rawValue in rawValues:
+      self._addAttributeValue(instance, unicode(rawValue))
+
+  def getAttributeValuesForInstance(self, instance):
+    raise NotImplementedError()
+
+  def _deleteAttributeValues(self, instance):
+    raise NotImplementedError()
+
+  def _addAttributeValue(self, instance, rawValue):
     raise NotImplementedError()
 

@@ -14,7 +14,7 @@ class AttributeResolver(object):
     return attribute.getValue(self.modelObject)
 
   def _getConceptAttributeValue(self, attribute):
-    attributeValues = attribute.getAttributesForInstance(self.modelObject)
+    attributeValues = attribute.getAttributeValuesForInstance(self.modelObject)
     if attribute.list:
       return [self._getConceptInstance(attributeValue) for attributeValue in attributeValues]
     return self._getConceptInstance(attributeValues[0])
