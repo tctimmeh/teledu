@@ -83,7 +83,7 @@ class TestHelpers(object):
 
   def assertCharacterAttributeHasRawValue(self, attribute, expected):
     if isinstance(attribute, CharacterAttributeValue):
-      actual = CharacterAttributeValue.objects.get(pk = attribute.id).raw_value
+      actual = CharacterAttributeValue.objects.get(attribute = attribute.attribute, character = self.character).raw_value
     else:
       actual = CharacterAttributeValue.objects.get(attribute = attribute, character = self.character).raw_value
     self.assertEqual(actual, unicode(expected))
