@@ -12,3 +12,6 @@ class Concept(models.Model):
   def __unicode__(self):
     return '%s - %s' % (self.gameSystem.name, self.name)
 
+  @classmethod
+  def getConcept(cls, gameSystem, conceptName):
+    return cls.objects.get(gameSystem = gameSystem, name = conceptName)

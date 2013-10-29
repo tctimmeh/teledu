@@ -69,3 +69,13 @@ class WhenGettingCharacterAttribute(TeleduTestCase):
     attribute = self.createAttribute(list = True)
     expected = [self.uniqStr(), self.uniqStr(), self.uniqStr()]
     self._assertCalcFunctionProducesResult(attribute, "result = %s" % expected, expected)
+
+  def testReturningListOfConceptInstancesSetsListAttribute(self):
+    attribute = self.addAttributeToCharacter(type = 'concept', concept = self.concept, list = True)
+    instance1 = self.createConceptInstance()
+    instance2 = self.createConceptInstance()
+    expected = [instance1.name, instance2.name]
+    self._assertCalcFunctionProducesResult(attribute, "result = [concept.%s.%s, concept.%s.%s]" % (
+      self.concept.name, instance1.name, self.concept.name, instance2.name
+    ), expected)
+

@@ -1,7 +1,7 @@
 import random
 import string
-from teledu.models import GameSystem, DataType, CharacterAttribute, Character, CharacterAttributeValue, CharacterSheet, \
-  Concept, CharacterAttributeDependency, ConceptAttribute, ConceptInstance, ConceptAttributeValue
+from teledu.models import GameSystem, DataType, CharacterAttribute, ConceptInstance, Character, CharacterAttributeValue, CharacterSheet, \
+  Concept, CharacterAttributeDependency, ConceptAttribute, ConceptAttributeValue
 
 class TestHelpers(object):
   def uniqInt(self):

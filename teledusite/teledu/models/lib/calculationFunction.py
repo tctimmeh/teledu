@@ -11,15 +11,14 @@ class CalculationFunction(object):
     if self.definition:
       newValue = self._execCalcFunction()
       self.attribute.setRawValue(self.operand, newValue)
-      #attributeValue = self.attribute.getAttributeValuesForInstance(self.operand)[0]
-      #attributeValue.raw_value = unicode(newValue)
-      #attributeValue.save()
 
     self.result = self.attribute.getValue(self.operand)
 
   def _execCalcFunction(self):
+    from teledu.models.lib.conceptResolver import ConceptResolver
     scope = {
       'character': AttributeResolver(self.operand),
+      'concept': ConceptResolver(self.operand.gameSystem),
       'result': None
     }
     exec self.definition in scope
